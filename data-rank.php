@@ -3,8 +3,13 @@ session_start();
 header('Content-Type: text/html; charset=UTF-8');
 require_once("mysql.php");
 $sltv=0; 
+	$sql_query = "SELECT * FROM caidat WHERE id='1'";
+	$caidattmp = $conn->query($sql_query); 
+	$caidat = $caidattmp->fetch_assoc();
+	
+	
 	$chophepview = "{$caidat['viewrank']}";
-	if ($chophepview==0)
+	if ($chophepview==1)
 		{
 			if (isset($_SESSION['user_id'] ))
 				{
@@ -12,6 +17,16 @@ $sltv=0;
 					$sql_query = "SELECT * FROM members WHERE id='{$user_id}'";
 					$member1 = $conn->query($sql_query); 
 					$member = $member1->fetch_assoc();
+					if ($member['admin'] == "0"){
+						if ($chophepview == 0)
+							{
+								echo "<font color='red'><b>Admin đã tắt chức năng xem bảng điểm, vui lòng liên hệ admin để được trợ giúp!</b>";
+								exit;
+							}
+					
+					}
+
+
 				} 
 			else
 				{
@@ -31,9 +46,9 @@ if ($result->num_rows > 0) {
 //$conn->close();
 ?>
 <div class="container">
-	<h2>Bảng điểm tổng quát</h2>
-	<p>Danh sách sẽ được cập nhật liên tục</p>
-<table class="table table-condensed"> <thead><td><b><center>Rank</center></b></td><td><b>Tên thí sinh</b></td>
+<h2>Bảng điểm tổng quát</h2>
+<p>Danh sách sẽ được cập nhật liên tục</p>	
+<table  class="table table-bordered table-hover" > <thead><td><b><center>Rank</center></b></td><td><b>Tên thí sinh</b></td>
 <?php	
 // so luong bai tap
 $slbt = 0;
@@ -87,8 +102,7 @@ while($it->valid()) {
     }
     $it->next();
 }
-?>
-<td><b>Tổng điểm</b></td></thead>
+?><td><b>Tổng điểm</b></td></thead>
 <?php
 $sumpoint[0]=0;
 for ($i = 1; $i <= $sltv; $i++)
@@ -106,22 +120,41 @@ for ($i = 1; $i <= $sltv; $i++)
 			$arr_name[$i]=$member12['name'];
 			$sumpoint[$i]=$s;
 		}
-// Username
+// sort
 for ($i = 1; $i <= $sltv; $i++) $pos[$i]=$i;
-
+for ($i = 1; $i < $sltv; $i++)
+	{
+        $max = $i;
+        for ($j = $i + 1; $j <= $sltv; $j++){
+            if (
+			($sumpoint[$pos[$j]] > $sumpoint[$pos[$max]]) || 
+				(
+					($sumpoint[$pos[$j]] == $sumpoint[$pos[$max]]) && 
+					($tentv[$pos[$j]] < $tentv[$pos[$max]])
+				)			
+			)			
+			{
+                $max = $j;
+            }
+        }
+			$z=$pos[$i];
+			$pos[$i]=$pos[$max];
+			$pos[$max]=$z;	
+	}
 
 for ($i = 1; $i <= $sltv; $i++)
 		{
 			echo "<tr><td><center><b>".$i."</b></td></center>";
+			//$sql_query1 = @mysql_query("SELECT name FROM members WHERE username='{$tentv[$i]}'");
 			echo "<td>".$arr_name[$pos[$i]]."</td>";
 			for ($j = 1; $j <= $slbt; $j++)
 			{	
 				if ($point[$tentv[$pos[$i]]][$nameb[$j]] > 0)
 					echo "<td><font color = blue>".$point[$tentv[$pos[$i]]][$nameb[$j]]."</font></td>";
+				else if ($point[$tentv[$pos[$i]]][$nameb[$j]] == "∄ chưa nộp")
+					echo "<td>".$point[$tentv[$pos[$i]]][$nameb[$j]]."</td>";	
 				else
-					echo "<td>".$point[$tentv[$pos[$i]]][$nameb[$j]]."</td>";
-				
-
+					echo "<td><font color = red>".$point[$tentv[$pos[$i]]][$nameb[$j]]."</font></td>";
 			}
 			if ($sumpoint[$pos[$i]] == 0)
 				echo "<td><font color = red>".$sumpoint[$pos[$i]]."</font></td></tr>";
