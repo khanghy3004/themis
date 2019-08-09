@@ -17,7 +17,7 @@ include_once("dulieu/header.php");
 <h4>Bước 2:</h4>
 	<p>2.1 Chọn nộp bài</p>
 	<img class="img-responsive" src="img/buoc2-1.jpg" alt="Themis">
-	<p>Lưu ý: Tên file, input và ouput phải giống mã đề bài.</p>
+	<p>Lưu ý: Tên file, input và ouput phải giống mã đề bài. Ví dụ: bài BCVTAB</p>
 	<div class="panel panel-success">
       <div class="panel-heading">Code Example</div>
       <div class="panel-body">
