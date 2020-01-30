@@ -1,3 +1,37 @@
+.main {
+  padding: 16px;
+  margin-top: 50px;
+}
+.count-down-time {
+    color: #ee4035;
+    display: inline-flex;
+    justify-content: space-between;
+    min-height: 35px;
+    min-width: 175px;
+    align-items: flex-start
+}
+.count-down-time.finished {
+    color: #000;
+    justify-content: center;
+    align-items: flex-end
+}
+.count-down-part {
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    position: relative;
+    min-width: 2em
+}
+.count-down-part[data-label]::before {
+    content: attr(data-label);
+    color: #898989;
+    font-size: 10px;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    margin-top: 5px;
+    transform: translate(-50%, 100%)
+}
 .solvedfirst {
     color: white;
     background: #57B257 no-repeat center/32px url(../img/check_first.svg);

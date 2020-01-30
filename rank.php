@@ -36,6 +36,6 @@
 		}
 		</script>
 
-		<div id="ReloadThis"><img src="img/load.gif"/> Bảng xếp hạng đang được tải... </div>
+		<div id="ReloadThis" class="container"><img src="img/load.gif"/> Bảng xếp hạng đang được tải... </div>
 	</div>
 </div>

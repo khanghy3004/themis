@@ -205,7 +205,16 @@ for ($i = 1; $i < $sltv; $i++) {
 }
 
 for ($i = 1; $i <= $sltv; $i++) {
-    echo "<tr><td><center><b>" . $i . "</b></td></center>";
+    if ($i==1) {
+        echo "<tr><td><img src='./img/1st.png' height='30' width='33'></td>";
+    } elseif ($i == 2) {
+        echo "<tr><td><img src='./img/2nd.png' height='30' width='33'></td>";
+    } elseif ($i == 3) {
+        echo "<tr><td><img src='./img/3rd.png' height='30' width='33'></td>";
+    } else {
+        echo "<tr><td><center><b>" . $i . "</b></td></center>";
+    }
+    
     echo "<td>" . $arr_name[$pos[$i]] . "</td>";
     for ($j = 1; $j <= $slbt; $j++) {
         if ($point[$tentv[$pos[$i]]][$nameb[$j]] == MAX_POINT) {
