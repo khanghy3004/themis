@@ -127,7 +127,7 @@ while ($it->valid()) {
         $fi       = fopen($link, "r");
         $data     = fgets($fi);
         fclose($fi);
-        echo $link."<br>";
+        // echo $link."<br>";
         preg_match('#: (.+?)\n#s', $data, $res);
         // check max point
         if(!$check_solved[$user][$bai]) {

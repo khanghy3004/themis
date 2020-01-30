@@ -63,9 +63,30 @@ while ($it->valid()) {
         $link     = $directory . $it->getSubPathName();
         $fi       = fopen($link, "r");
         $data     = fgets($fi);
-        fclose($fi);
+        $time_limit="Chạy quá thời gian";
+        $check_time_limit = false;
+        $run_time="Chạy sinh lỗi";
+        $check_run_time;
+        $accepted = "Kết quả khớp đáp án!";
+        
         preg_match('#: (.+?)\n#s', $data, $res);
         if(!$check_solved[$user][$bai]) {
+            while (($buffer = fgets($fi)) !== false) {
+                if (strpos($buffer, $time_limit) !== false && $user == $tentv[1]) {
+                    $check_time_limit = true;
+                    echo "<font color='red'><b>".(int)($time/60).":".($time%60)." ".$bai." ".$buffer."</b></font><br>";
+                    break;
+                }
+                if (strpos($buffer, $run_time) !== false && $user == $tentv[1]) {
+                    $check_run_time = true;
+                    echo "<font color='red'><b>".(int)($time/60).":".($time%60)." ".$bai." ".$buffer."</b></font><br>";
+                    break;
+                }
+                if (strpos($buffer, $accepted) !== false && $user == $tentv[1]) {
+                    echo "<font color='green'><b>".(int)($time/60).":".($time%60)." ".$bai." ".$buffer."</b></font><br>";
+                    break;
+                }
+            }
             if ($res[1] == MAX_POINT) {
                 $check_solved[$user][$bai] = true;
                 // add time
@@ -89,6 +110,7 @@ while ($it->valid()) {
             $pen[$user][$bai] += 1;
   
         }
+        fclose($fi);
     }
     $it->next();
 }
