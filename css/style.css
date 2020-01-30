@@ -1,0 +1,81 @@
+.solvedfirst {
+    color: white;
+    background: #57B257 no-repeat center/32px url(../img/check_first.svg);
+}
+.solved {
+	font-size: 110%;
+    color: #555;
+    background: #AAE2AB no-repeat center/32px url(../img/check.svg);
+}
+.attempted {
+	font-size: 110%;
+    color: #fff;
+    background: #F67B51 no-repeat center/32px url(../img/cross.svg);
+}
+.frozen {
+	font-size: 110%;
+    color: #fff;
+    background: #ddd no-repeat center/32px url(../img/question.svg);
+}
+td {
+	text-align: center;
+}
+.legend-solved {
+    background: #AAE2AB no-repeat center/75% url("../img/check.svg")
+}
+.legend-solvedfirst {
+    background: #57B257 no-repeat center/75% url("../img/check_first.svg")
+}
+.legend-attempted {
+    background: #F67B51 no-repeat center/75% url("../img/cross.svg")
+}
+.legend-pending {
+    background: #dcdcdc no-repeat center/50% url("../img/question.svg")
+}
+.legend-partial-score {
+    background: no-repeat center/85% url("/images/standings/check_partial.svg"), linear-gradient(to top left, #f67a51 -100%, #ff9 50%, #dff19d 90%, #aae2ab 200%);
+    border: 1px solid #eee
+}
+.table-legend {
+    border: 1px solid #CBCBCB;
+    padding: 4px;
+    display: inline;
+    border-radius: 4px;
+    margin-top: 8px;
+    margin-bottom: 15px;
+    color: #82868b
+}
+.table-legend .legend-label {
+    display: inline;
+    font-size: 14px;
+    margin-top: 2px
+}
+.table-legend div {
+    display: inline
+}
+.table-legend div:not(:first-child) {
+    padding-left: 20px
+}
+.table-legend .legend-status, .table-legend .legend-leader, .table-legend .legend-whoami {
+    width: 23px;
+    height: 23px;
+    border-radius: 2px;
+    display: inline-block;
+    vertical-align: middle
+}
+.table-legend .legend-leader {
+    background-color: #FCCA2D;
+    border-radius: 50%;
+    border: 3px solid #fff
+}
+.table-legend .legend-whoami {
+    background-color: #CEE4EE
+}
+.legend-leader-td {
+    width: 20px;
+    height: 20px;
+    background-color: #FCCA2D;
+    border-radius: 50%;
+    display: inline;
+    float: right
+}

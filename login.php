@@ -56,15 +56,15 @@ print <<<EOF
 <div class="container">
   <form action="login.php?act=do&CBHT=login" method="post">
     <div class="form-group">
-      <label for="username">Tên đăng nhập:</label>
+      <label for="username">Username:</label>
       <input type="text" class="form-control" placeholder="Username" name="username">
     </div>
     <div class="form-group">
-      <label for="password">Mật khẩu:</label>
+      <label for="password">Password:</label>
       <input id="password-field" type="password" class="form-control" placeholder="Password" name="password">
     </div>
     <div class="form-group">
-   <input type="checkbox" onclick="showpassword()"> Hiện mật khẩu</div>
+   <input type="checkbox" onclick="showpassword()"> Show password</div>
     <script>
 	function showpassword() {
 	  var x = document.getElementById("password-field");
@@ -76,7 +76,7 @@ print <<<EOF
 	}
 	</script>
     </script>
-    <input type="submit" class="btn btn-info" name="submit" value="Đăng nhập">
+    <input type="submit" class="btn btn-info" name="submit" value="Log in">
   </form>
 </div>
 EOF;

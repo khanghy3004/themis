@@ -1,35 +1,10 @@
-﻿<?php
+<?php
 session_start();
 header('Content-Type: text/html; charset=UTF-8');
 require_once "mysql.php";
-define("MAX_POINT", 10, true);
 $sltv      = 0;
-$sql_query = "SELECT * FROM caidat WHERE id='1'";
-$caidattmp = $conn->query($sql_query);
-$caidat    = $caidattmp->fetch_assoc();
-
-$chophepview = "{$caidat['viewrank']}";
-
-if (isset($_SESSION['user_id'])) {
-    $user_id   = intval($_SESSION['user_id']);
-    $sql_query = "SELECT * FROM members WHERE id='{$user_id}'";
-    $member1   = $conn->query($sql_query);
-    $member    = $member1->fetch_assoc();
-
-    if ($member['admin'] == "0") {
-        if ($chophepview == 0) {
-            echo "<font color='red'><b>Admin đã tắt chức năng xem bảng điểm, vui lòng liên hệ admin để được trợ giúp!</b>";
-            exit;
-        }
-
-    }
-
-} else {
-    echo "<div class = container><font color = red>" . "Please login to view the ranks" . "</font></div>";
-    exit;
-}
-
-$result = $conn->query("SELECT username FROM members");
+define("MAX_POINT", 10, true);
+$result = $conn->query("SELECT username FROM members WHERE id='{$user_id}'");
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         $sltv         = $sltv + 1;
@@ -38,47 +13,9 @@ if ($result->num_rows > 0) {
 }
 //$conn->close();
 ?>
-
 <div class="container">
-<div class="col-md-3 text-left no-pad">
-    <h4>Start</h4>
-    <?php echo $begin; ?>
-</div>
-<div class="col-md-6 text-center">
-    <h2 class="title"><?php echo $cname; ?></h2>
-</div>
-<div class="col-md-3 text-right no-pad">
-    <h4>End</h4>
-    <?php echo $date; ?>
-</div>
-</div>
-<div class="container">
-<!-- progress bar -->
-<div class="progress progress-striped active">
-<div class="progress-bar progress-bar-success" style="width: <?php echo (strtotime(date('H:i:s')) - strtotime($begin))/(strtotime($date) - strtotime($begin)) * 100; ?>%"></div>
-</div>
-<div class="legend-strip">
-    <div class="table-legend">
-        <div>
-        <span class="legend-solvedfirst legend-status"></span>
-        <p class="legend-label"> First Solved problem</p></div>
-        <div>
-        <div>
-        <span class="legend-solved legend-status"></span>
-        <p class="legend-label"> Solved problem</p></div>
-        <div>
-        <span class="legend-attempted legend-status"></span>
-        <p class="legend-label"> Attempted problem</p>
-        </div>
-        <div>
-        <span class="legend-pending legend-status"></span>
-        <p class="legend-label"> Pending judgement</p>
-        </div>
-    </div>
-</div>
-<br>
-<br>
-<table  class="table table-bordered table-hover" > <thead><td><b><center>Rank</center></b></td><td><b>Name</b></td>
+<h3>Điểm hiện tại</h3>
+<table  class="table table-bordered table-hover" > <thead><td><b>Name</b></td>
 <?php
 // so luong bai tap
 $slbt        = 0;
@@ -104,13 +41,13 @@ for ($i = 1; $i <= $sltv; $i++) {
     for ($j = 1; $j <= $slbt; $j++) {
         $point[$tentv[$i]][$nameb[$j]] = $chuanop; //echo 1;
         $first_solve[$tentv[$i]][$nameb[$j]] = false;
-        $check_solved[$tentv[$i]][$nameb[$j]] = false;
         $pen[$tentv[$i]][$nameb[$j]] = 0;
     }
 }
 for ($i = 1; $i <= $slbt; $i++) {
     $first[$nameb[$i]] == false;
 }
+
 $directory = 'nopbai/Logs/';
 $it        = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory));
 
@@ -127,37 +64,30 @@ while ($it->valid()) {
         $fi       = fopen($link, "r");
         $data     = fgets($fi);
         fclose($fi);
-        echo $link."<br>";
         preg_match('#: (.+?)\n#s', $data, $res);
-        // check max point
         if(!$check_solved[$user][$bai]) {
-            if ($res[1] == MAX_POINT && $frozen != "frozen" ) {
+            if ($res[1] == MAX_POINT) {
                 $check_solved[$user][$bai] = true;
                 // add time
                 $thoigian[$user][$bai] = $time+720*$pen[$user][$bai];
             }
             
-            // check pending
-            if ($frozen == "frozen") {
-                $point[$user][$bai] = "frozen";
-                $pen[$user][$bai]-=1;
-            } else { 
-                // Lấy thông tin của username đã nhập trong table members
-                $sql_query          = "SELECT id, username FROM members WHERE username='{$user}'";
-                $member1            = $conn->query($sql_query);
-                $member             = $member1->fetch_assoc();
-                if ($res[1]<MAX_POINT) $res[1]=0;
-                
+            // Lấy thông tin của username đã nhập trong table members
+            $sql_query          = "SELECT id, username FROM members WHERE username='{$user}'";
+            $member1            = $conn->query($sql_query);
+            $member             = $member1->fetch_assoc();
+            if ($res[1]<MAX_POINT) $res[1]=0;
+            
 
-                $point[$user][$bai] = $res[1];
-                // Check first solve
-                if(!$first[$bai] && $point[$user][$bai] == MAX_POINT) {
-                    $first[$bai] = true;
-                    $first_solve[$user][$bai] = true;
-                }   
+            $point[$user][$bai] = $res[1];
+            // Check first solve
+            if(!$first[$bai] && $point[$user][$bai] == MAX_POINT) {
+                $first[$bai] = true;
+                $first_solve[$user][$bai] = true;
             }
             // add more penalty
-            $pen[$user][$bai] += 1; 
+            $pen[$user][$bai] += 1;
+  
         }
     }
     $it->next();
@@ -205,7 +135,6 @@ for ($i = 1; $i < $sltv; $i++) {
 }
 
 for ($i = 1; $i <= $sltv; $i++) {
-    echo "<tr><td><center><b>" . $i . "</b></td></center>";
     echo "<td>" . $arr_name[$pos[$i]] . "</td>";
     for ($j = 1; $j <= $slbt; $j++) {
         if ($point[$tentv[$pos[$i]]][$nameb[$j]] == MAX_POINT) {
@@ -216,8 +145,6 @@ for ($i = 1; $i <= $sltv; $i++) {
             }
         } else if ($point[$tentv[$pos[$i]]][$nameb[$j]] == "∄ chưa nộp") {
             echo "<td bgcolor=''>" . $point[$tentv[$pos[$i]]][$nameb[$j]] . "</td>";
-        } else if ($point[$tentv[$pos[$i]]][$nameb[$j]] == "frozen") {
-            echo "<td class='frozen'>".$pen[$tentv[$pos[$i]]][$nameb[$j]]."</td>";
         } else {
             echo "<td class='attempted'>".$pen[$tentv[$pos[$i]]][$nameb[$j]]."</td>";
         } 
@@ -230,8 +157,8 @@ for ($i = 1; $i <= $sltv; $i++) {
     }
 
 }
-
 ?>
 
 
 </table>
+</div>

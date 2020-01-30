@@ -1,13 +1,15 @@
 -- phpMyAdmin SQL Dump
--- version 4.5.1
--- http://www.phpmyadmin.net
+-- version 4.8.3
+-- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 04, 2019 at 07:12 AM
--- Server version: 10.1.19-MariaDB
--- PHP Version: 5.6.28
+-- Generation Time: Jan 30, 2020 at 05:34 AM
+-- Server version: 10.1.36-MariaDB
+-- PHP Version: 5.6.38
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
 SET time_zone = "+00:00";
 
 
@@ -61,10 +63,10 @@ CREATE TABLE `members` (
 --
 
 INSERT INTO `members` (`id`, `username`, `password`, `email`, `Name`, `admin`) VALUES
-(1, 'admin', '21232f297a57a5a743894a0e4a801fc3', '', '<font color="red"><b>admin</font></b>', 1),
+(1, 'admin', '21232f297a57a5a743894a0e4a801fc3', '', '<font color=\"red\"><b>admin</font></b>', 1),
 (2, 'khangnbpce140201', '1ac8fea598fb6f8eca02dc09e3b551e3', '', 'Phúc Khang', 0),
 (3, 'hynvkce140237', 'e5bfd6a9e3ea67e708265db6b40aae2d', '', 'Khang Hy', 1),
-(4, 'dunglvnce140405', '3778362936240896e1d082399a653c49', '', 'Ngọc Dung', 0),
+(4, 'dunglvnce140405', '3778362936240896e1d082399a653c49', '', 'Alo', 0),
 (5, 'bangntce130421', 'bbe46fc6f7ad62831da852351e221bfd', '', 'Tuấn Bằng', 0),
 (6, 'anhvhlce140319', '3f7ef6d2b9febc83feaa97148003dd0a', '', 'Lan Anh', 0),
 (7, 'khanhtdce140230', '05f1b8ba6dbe323960efa4d37b7a741b', '', 'Duy Khánh', 0),
@@ -87,7 +89,29 @@ INSERT INTO `members` (`id`, `username`, `password`, `email`, `Name`, `admin`) V
 (24, 'tuandace140502', '1448912bad176ca2c63948e0ed7f8b43', '', 'Anh Tuấn', 0),
 (25, 'tuongtkce140347', 'e21124a6596c9c19c78bef20e15bb281', '', 'Khánh Tường', 0),
 (26, 'uyennlpce140422', 'c7e86ae782792a0eb2119495c2f9bc13', '', 'Phương Uyên', 0),
-(27, 'vuntce140419', 'bb02535092750dfd216b7fb2a21c7ad8', '', 'Tấn Vủ', 0);
+(27, 'vuntce140419', 'bb02535092750dfd216b7fb2a21c7ad8', '', 'Tấn Vủ', 0),
+(335, 'duy', 'c4ca4238a0b923820dcc509a6f75849b', '', 'Duy', 0),
+(336, 'vu', 'c4ca4238a0b923820dcc509a6f75849b', '', 'Vũ', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `thoigian`
+--
+
+CREATE TABLE `thoigian` (
+  `id` int(11) NOT NULL,
+  `timebegin` datetime NOT NULL,
+  `timeend` datetime NOT NULL,
+  `name` text COLLATE utf8mb4_vietnamese_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_vietnamese_ci;
+
+--
+-- Dumping data for table `thoigian`
+--
+
+INSERT INTO `thoigian` (`id`, `timebegin`, `timeend`, `name`) VALUES
+(1, '2020-01-30 01:00:00', '2020-01-31 01:00:00', 'FPT');
 
 --
 -- Indexes for dumped tables
@@ -106,6 +130,12 @@ ALTER TABLE `members`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `thoigian`
+--
+ALTER TABLE `thoigian`
+  ADD PRIMARY KEY (`timeend`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -114,11 +144,14 @@ ALTER TABLE `members`
 --
 ALTER TABLE `caidat`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
 --
 -- AUTO_INCREMENT for table `members`
 --
 ALTER TABLE `members`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=335;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=337;
+COMMIT;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

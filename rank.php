@@ -3,7 +3,7 @@
 		<script type="text/javascript">
 		function Ajax(){
 		var xmlHttp;
-			try{	
+			try{
 				xmlHttp=new XMLHttpRequest();// Firefox, Opera 8.0+, Safari
 			}
 			catch (e){
@@ -24,7 +24,7 @@
 		xmlHttp.onreadystatechange=function(){
 			if(xmlHttp.readyState==4){
 				document.getElementById('ReloadThis').innerHTML=xmlHttp.responseText;
-				setTimeout('Ajax()',1000);
+				setTimeout('Ajax()',2000);
 			}
 		}
 		xmlHttp.open("GET","data-rank.php",true);
