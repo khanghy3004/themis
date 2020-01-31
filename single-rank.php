@@ -66,7 +66,9 @@ while ($it->valid()) {
         $time_limit="Chạy quá thời gian";
         $check_time_limit = false;
         $run_time="Chạy sinh lỗi";
-        $check_run_time;
+        $check_run_time = false;
+        $wrong_ans = "Kết quả KHÁC đáp án!";
+        $check_wrong_ans = false;
         $accepted = "Kết quả khớp đáp án!";
         
         preg_match('#: (.+?)\n#s', $data, $res);
@@ -82,10 +84,15 @@ while ($it->valid()) {
                     echo "<font color='red'><b>".(int)($time/60).":".($time%60)." ".$bai." ".$buffer."</b></font><br>";
                     break;
                 }
-                if (strpos($buffer, $accepted) !== false && $user == $tentv[1]) {
-                    echo "<font color='green'><b>".(int)($time/60).":".($time%60)." ".$bai." ".$buffer."</b></font><br>";
+                if (strpos($buffer, $wrong_ans) !== false && $user == $tentv[1]) {
+                    $check_wrong_ans = true;
+                    echo "<font color='red'><b>".(int)($time/60).":".($time%60)." ".$bai." ".$buffer."</b></font><br>";
                     break;
                 }
+                
+            }
+            if ($user == $tentv[1] && !$check_time_limit && !$check_run_time && !$check_wrong_ans) {
+                echo "<font color='green'><b>".(int)($time/60).":".($time%60)." ".$bai." ".$accepted."</b></font><br>";
             }
             if ($res[1] == MAX_POINT) {
                 $check_solved[$user][$bai] = true;
