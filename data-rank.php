@@ -2,6 +2,7 @@
 session_start();
 header('Content-Type: text/html; charset=UTF-8');
 require_once "mysql.php";
+require_once "sort_dir.php";
 define("MAX_POINT", 10, true);
 $sltv      = 0;
 $sql_query = "SELECT * FROM caidat WHERE id='1'";
@@ -112,55 +113,52 @@ for ($i = 1; $i <= $slbt; $i++) {
     $first[$nameb[$i]] == false;
 }
 $directory = 'nopbai/Logs/';
-$it        = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory));
+$files_array = better_scandir($directory);
 
-while ($it->valid()) {
-
-    if (!$it->isDot()) {
-        $datainfo = $it->getSubPathName();
-        $r        = explode(']', $datainfo);
-        $frozen   = trim($r[1], '[');
-        $time     = trim($r[2], '[');
-        $user     = trim($r[3], '[');
-        $bai      = strtoupper(trim($r[4], '['));
-        $link     = $directory . $it->getSubPathName();
-        $fi       = fopen($link, "r");
-        $data     = fgets($fi);
-        fclose($fi);
-        // echo $link."<br>";
-        preg_match('#: (.+?)\n#s', $data, $res);
-        // check max point
-        if(!$check_solved[$user][$bai]) {
-            if ($res[1] == MAX_POINT && $frozen != "frozen" ) {
-                $check_solved[$user][$bai] = true;
-                // add time
-                $thoigian[$user][$bai] = $time+720*$pen[$user][$bai];
-            }
-            
-            // check pending
-            if ($frozen == "frozen") {
-                $point[$user][$bai] = "frozen";
-                $pen[$user][$bai]-=1;
-            } else { 
-                // Lấy thông tin của username đã nhập trong table members
-                $sql_query          = "SELECT id, username FROM members WHERE username='{$user}'";
-                $member1            = $conn->query($sql_query);
-                $member             = $member1->fetch_assoc();
-                if ($res[1]<MAX_POINT) $res[1]=0;
-                
-
-                $point[$user][$bai] = $res[1];
-                // Check first solve
-                if(!$first[$bai] && $point[$user][$bai] == MAX_POINT) {
-                    $first[$bai] = true;
-                    $first_solve[$user][$bai] = true;
-                }   
-            }
-            // add more penalty
-            $pen[$user][$bai] += 1; 
+foreach($files_array as $file) {
+    $datainfo = $file;
+    $r        = explode(']', $datainfo);
+    $frozen   = trim($r[0], '[');
+    $time     = trim($r[1], '[');
+    $user     = trim($r[2], '[');
+    $bai      = strtoupper(trim($r[3], '['));
+    $link     = $directory . $file;
+    $fi       = fopen($link, "r");
+    $data     = fgets($fi);
+    
+    // echo $link."<br>";
+    preg_match('#: (.+?)\n#s', $data, $res);
+    // check max point
+    if(!$check_solved[$user][$bai]) {
+        if ($res[1] == MAX_POINT && $frozen != "frozen" ) {
+            $check_solved[$user][$bai] = true;
+            // add time
+            $thoigian[$user][$bai] = $time+720*$pen[$user][$bai];
         }
+        
+        // check pending
+        if ($frozen == "frozen") {
+            $point[$user][$bai] = "frozen";
+            $pen[$user][$bai]-=1;
+        } else { 
+            // Lấy thông tin của username đã nhập trong table members
+            $sql_query          = "SELECT id, username FROM members WHERE username='{$user}'";
+            $member1            = $conn->query($sql_query);
+            $member             = $member1->fetch_assoc();
+            if ($res[1]<MAX_POINT) $res[1]=0;
+            
+
+            $point[$user][$bai] = $res[1];
+            // Check first solve
+            if(!$first[$bai] && $point[$user][$bai] == MAX_POINT) {
+                $first[$bai] = true;
+                $first_solve[$user][$bai] = true;
+            }   
+        }
+        // add more penalty
+        $pen[$user][$bai] += 1; 
     }
-    $it->next();
+    fclose($fi);
 }
 ?><td><b>TIME</b></td></thead>
 <?php

@@ -2,6 +2,7 @@
 session_start();
 header('Content-Type: text/html; charset=UTF-8');
 require_once "mysql.php";
+require_once "sort_dir.php";
 $sltv      = 0;
 define("MAX_POINT", 10, true);
 $result = $conn->query("SELECT username FROM members WHERE id='{$user_id}'");
@@ -50,76 +51,81 @@ for ($i = 1; $i <= $slbt; $i++) {
 
 $directory = 'nopbai/Logs/';
 $it        = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory));
+$files_array = better_scandir($directory);
 
-while ($it->valid()) {
+foreach($files_array as $file) {
+    $datainfo = $file;
+    $r        = explode(']', $datainfo);
+    $frozen   = trim($r[2], '[');
+    $time     = trim($r[1], '[');
+    $user     = trim($r[2], '[');
+    $bai      = strtoupper(trim($r[3], '['));
+    $link     = $directory . $file;
+    $fi       = fopen($link, "r");
+    $data     = fgets($fi);
+    $time_limit="Chạy quá thời gian";
+    $check_time_limit = false;
+    $run_time="Chạy sinh lỗi";
+    $check_run_time = false;
+    $wrong_ans = "Kết quả KHÁC đáp án!";
+    $check_wrong_ans = false;
+    $compile_err = "ℱ Dịch lỗi";
+    $check_compile_err = false;
+    $accepted = "Kết quả khớp đáp án!";
 
-    if (!$it->isDot()) {
-        $datainfo = $it->getSubPathName();
-        $r        = explode(']', $datainfo);
-        $frozen   = trim($r[1], '[');
-        $time     = trim($r[2], '[');
-        $user     = trim($r[3], '[');
-        $bai      = strtoupper(trim($r[4], '['));
-        $link     = $directory . $it->getSubPathName();
-        $fi       = fopen($link, "r");
-        $data     = fgets($fi);
-        $time_limit="Chạy quá thời gian";
-        $check_time_limit = false;
-        $run_time="Chạy sinh lỗi";
-        $check_run_time = false;
-        $wrong_ans = "Kết quả KHÁC đáp án!";
-        $check_wrong_ans = false;
-        $accepted = "Kết quả khớp đáp án!";
-        
+    if(!$check_solved[$user][$bai] && $user == $tentv[1]) {
         preg_match('#: (.+?)\n#s', $data, $res);
-        if(!$check_solved[$user][$bai]) {
-            while (($buffer = fgets($fi)) !== false) {
-                if (strpos($buffer, $time_limit) !== false && $user == $tentv[1]) {
-                    $check_time_limit = true;
-                    echo "<font color='red'><b>".(int)($time/60).":".($time%60)." ".$bai." ".$buffer."</b></font><br>";
-                    break;
-                }
-                if (strpos($buffer, $run_time) !== false && $user == $tentv[1]) {
-                    $check_run_time = true;
-                    echo "<font color='red'><b>".(int)($time/60).":".($time%60)." ".$bai." ".$buffer."</b></font><br>";
-                    break;
-                }
-                if (strpos($buffer, $wrong_ans) !== false && $user == $tentv[1]) {
-                    $check_wrong_ans = true;
-                    echo "<font color='red'><b>".(int)($time/60).":".($time%60)." ".$bai." ".$buffer."</b></font><br>";
-                    break;
-                }
-                
-            }
-            if ($user == $tentv[1] && !$check_time_limit && !$check_run_time && !$check_wrong_ans) {
-                echo "<font color='green'><b>".(int)($time/60).":".($time%60)." ".$bai." ".$accepted."</b></font><br>";
-            }
-            if ($res[1] == MAX_POINT) {
-                $check_solved[$user][$bai] = true;
-                // add time
-                $thoigian[$user][$bai] = $time+720*$pen[$user][$bai];
-            }
-            
-            // Lấy thông tin của username đã nhập trong table members
-            $sql_query          = "SELECT id, username FROM members WHERE username='{$user}'";
-            $member1            = $conn->query($sql_query);
-            $member             = $member1->fetch_assoc();
-            if ($res[1]<MAX_POINT) $res[1]=0;
-            
-
-            $point[$user][$bai] = $res[1];
-            // Check first solve
-            if(!$first[$bai] && $point[$user][$bai] == MAX_POINT) {
-                $first[$bai] = true;
-                $first_solve[$user][$bai] = true;
-            }
-            // add more penalty
-            $pen[$user][$bai] += 1;
-  
+        if (strpos($res[1], $compile_err) !== false) {
+            $check_compile_err = true;
+            echo "<font color='red'><b>".(int)($time/60).":".($time%60)." ".$bai." ".$compile_err."</b></font><br>";
         }
-        fclose($fi);
+
+        while (($buffer = fgets($fi)) !== false) {
+            if (strpos($buffer, $time_limit) !== false) {
+                $check_time_limit = true;
+                echo "<font color='red'><b>".(int)($time/60).":".($time%60)." ".$bai." ".$buffer."</b></font><br>";
+                break;
+            }
+            if (strpos($buffer, $run_time) !== false) {
+                $check_run_time = true;
+                echo "<font color='red'><b>".(int)($time/60).":".($time%60)." ".$bai." ".$buffer."</b></font><br>";
+                break;
+            }
+            if (strpos($buffer, $wrong_ans) !== false) {
+                $check_wrong_ans = true;
+                echo "<font color='red'><b>".(int)($time/60).":".($time%60)." ".$bai." ".$buffer."</b></font><br>";
+                break;
+            }
+            
+        }
+        if ($user == $tentv[1] && !$check_time_limit && !$check_run_time && !$check_wrong_ans && !$check_compile_err) {
+            echo "<font color='green'><b>".(int)($time/60).":".($time%60)." ".$bai." ".$accepted."</b></font><br>";
+        }
+        if ($res[1] == MAX_POINT) {
+            $check_solved[$user][$bai] = true;
+            // add time
+            $thoigian[$user][$bai] = $time+720*$pen[$user][$bai];
+        }
+        
+        // Lấy thông tin của username đã nhập trong table members
+        $sql_query          = "SELECT id, username FROM members WHERE username='{$user}'";
+        $member1            = $conn->query($sql_query);
+        $member             = $member1->fetch_assoc();
+        if ($res[1]<MAX_POINT) $res[1]=0;
+        
+
+        $point[$user][$bai] = $res[1];
+        // Check first solve
+        if(!$first[$bai] && $point[$user][$bai] == MAX_POINT) {
+            $first[$bai] = true;
+            $first_solve[$user][$bai] = true;
+        }
+        // add more penalty
+        $pen[$user][$bai] += 1;
+
     }
-    $it->next();
+    fclose($fi);
+
 }
 ?><td><b>TIME</b></td></thead>
 <?php
