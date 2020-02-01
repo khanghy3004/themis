@@ -3,7 +3,7 @@ session_start();
 header('Content-Type: text/html; charset=UTF-8');
 require_once "mysql.php";
 require_once "sort_dir.php";
-define("MAX_POINT", 10, true);
+define("MAX_POINT", 50, true);
 $sltv      = 0;
 $sql_query = "SELECT * FROM caidat WHERE id='1'";
 $caidattmp = $conn->query($sql_query);
@@ -213,13 +213,16 @@ for ($i = 1; $i <= $sltv; $i++) {
         echo "<tr><td><center><b>" . $i . "</b></td></center>";
     }
     
+    $hours = (int)($tongthoigian[$pos[$i]]/3600);
+    $mins = (int)($tongthoigian[$pos[$i]]/60)%60;
+
     echo "<td>" . $arr_name[$pos[$i]] . "</td>";
     for ($j = 1; $j <= $slbt; $j++) {
         if ($point[$tentv[$pos[$i]]][$nameb[$j]] == MAX_POINT) {
             if ($first_solve[$tentv[$pos[$i]]][$nameb[$j]]) {
-                echo "<td class='solvedfirst'>".$pen[$tentv[$pos[$i]]][$nameb[$j]]."<br>".(int)($thoigian[$tentv[$pos[$i]]][$nameb[$j]]/60).":".($thoigian[$tentv[$pos[$i]]][$nameb[$j]]%60)."</td>";
+                echo "<td class='solvedfirst'>".$pen[$tentv[$pos[$i]]][$nameb[$j]]."<br>".$hours.":".$mins."</td>";
             } else {
-                echo "<td class='solved'>".$pen[$tentv[$pos[$i]]][$nameb[$j]]."<br>".(int)($thoigian[$tentv[$pos[$i]]][$nameb[$j]]/60).":".($thoigian[$tentv[$pos[$i]]][$nameb[$j]]%60)."</td>";
+                echo "<td class='solved'>".$pen[$tentv[$pos[$i]]][$nameb[$j]]."<br>".$hours.":".$mins."</td>";
             }
         } else if ($point[$tentv[$pos[$i]]][$nameb[$j]] == "∄ chưa nộp") {
             echo "<td bgcolor=''>" . $point[$tentv[$pos[$i]]][$nameb[$j]] . "</td>";
@@ -233,7 +236,7 @@ for ($i = 1; $i <= $sltv; $i++) {
     if ($sumpoint[$pos[$i]] == 0) {
         echo "<td><font color = red></font><br>"."</td></tr>";
     } else {
-        echo "<td>".(int)($tongthoigian[$pos[$i]]/60).":".($tongthoigian[$pos[$i]]%60)."</td></tr>";
+        echo "<td>".$hours.":".$mins."</td></tr>";
     }
 
 }

@@ -73,33 +73,36 @@ foreach($files_array as $file) {
     $check_compile_err = false;
     $accepted = "Kết quả khớp đáp án!";
 
+    $hours = (int)($time/3600);
+    $mins = (int)($time/60)%60;
+
     if(!$check_solved[$user][$bai] && $user == $tentv[1]) {
         preg_match('#: (.+?)\n#s', $data, $res);
         if (strpos($res[1], $compile_err) !== false) {
             $check_compile_err = true;
-            echo "<font color='red'><b>".(int)($time/60).":".($time%60)." ".$bai." ".$compile_err."</b></font><br>";
+            echo "<font color='red'><b>".$hours.":".$mins." ".$bai." ".$compile_err."</b></font><br>";
         }
 
         while (($buffer = fgets($fi)) !== false) {
             if (strpos($buffer, $time_limit) !== false) {
                 $check_time_limit = true;
-                echo "<font color='red'><b>".(int)($time/60).":".($time%60)." ".$bai." ".$buffer."</b></font><br>";
+                echo "<font color='red'><b>".$hours.":".$mins." ".$bai." ".$buffer."</b></font><br>";
                 break;
             }
             if (strpos($buffer, $run_time) !== false) {
                 $check_run_time = true;
-                echo "<font color='red'><b>".(int)($time/60).":".($time%60)." ".$bai." ".$buffer."</b></font><br>";
+                echo "<font color='red'><b>".$hours.":".$mins." ".$bai." ".$buffer."</b></font><br>";
                 break;
             }
             if (strpos($buffer, $wrong_ans) !== false) {
                 $check_wrong_ans = true;
-                echo "<font color='red'><b>".(int)($time/60).":".($time%60)." ".$bai." ".$buffer."</b></font><br>";
+                echo "<font color='red'><b>".$hours.":".$mins." ".$bai." ".$buffer."</b></font><br>";
                 break;
             }
             
         }
         if ($user == $tentv[1] && !$check_time_limit && !$check_run_time && !$check_wrong_ans && !$check_compile_err) {
-            echo "<font color='green'><b>".(int)($time/60).":".($time%60)." ".$bai." ".$accepted."</b></font><br>";
+            echo "<font color='green'><b>".$hours.":".$mins." ".$bai." ".$accepted."</b></font><br>";
         }
         if ($res[1] == MAX_POINT) {
             $check_solved[$user][$bai] = true;
@@ -169,14 +172,17 @@ for ($i = 1; $i < $sltv; $i++) {
     $pos[$max] = $z;
 }
 
+$hours = (int)($tongthoigian[$pos[$i]]/3600);
+$mins = (int)($tongthoigian[$pos[$i]]/60)%60;
+
 for ($i = 1; $i <= $sltv; $i++) {
     echo "<td>" . $arr_name[$pos[$i]] . "</td>";
     for ($j = 1; $j <= $slbt; $j++) {
         if ($point[$tentv[$pos[$i]]][$nameb[$j]] == MAX_POINT) {
             if ($first_solve[$tentv[$pos[$i]]][$nameb[$j]]) {
-                echo "<td class='solvedfirst'>".$pen[$tentv[$pos[$i]]][$nameb[$j]]."<br>".(int)($thoigian[$tentv[$pos[$i]]][$nameb[$j]]/60).":".($thoigian[$tentv[$pos[$i]]][$nameb[$j]]%60)."</td>";
+                echo "<td class='solvedfirst'>".$pen[$tentv[$pos[$i]]][$nameb[$j]]."<br>".$hours.":".$mins."</td>";
             } else {
-                echo "<td class='solved'>".$pen[$tentv[$pos[$i]]][$nameb[$j]]."<br>".(int)($thoigian[$tentv[$pos[$i]]][$nameb[$j]]/60).":".($thoigian[$tentv[$pos[$i]]][$nameb[$j]]%60)."</td>";
+                echo "<td class='solved'>".$pen[$tentv[$pos[$i]]][$nameb[$j]]."<br>".$hours.":".$mins."</td>";
             }
         } else if ($point[$tentv[$pos[$i]]][$nameb[$j]] == "∄ chưa nộp") {
             echo "<td bgcolor=''>" . $point[$tentv[$pos[$i]]][$nameb[$j]] . "</td>";
@@ -188,7 +194,7 @@ for ($i = 1; $i <= $sltv; $i++) {
     if ($sumpoint[$pos[$i]] == 0) {
         echo "<td><font color = red></font><br>"."</td></tr>";
     } else {
-        echo "<td>".(int)($tongthoigian[$pos[$i]]/60).":".($tongthoigian[$pos[$i]]%60)."</td></tr>";
+        echo "<td>".$hours.":".$mins."</td></tr>";
     }
 
 }
