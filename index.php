@@ -62,6 +62,13 @@ switch($_GET["CBHT"])
 	include_once("dulieu/footer.php");
 	break;
 	}
+	case "help":
+	{
+	include_once("dulieu/header.php");
+	include_once("help.php");
+	include_once("dulieu/footer.php");
+	break;
+	}
 }
 
 ?>

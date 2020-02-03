@@ -1,3 +1,6 @@
+body {
+    font-family: "Arial", sans-serif;
+}
 .main {
   padding: 16px;
   margin-top: 50px;
@@ -112,4 +115,15 @@ td {
     border-radius: 50%;
     display: inline;
     float: right
+}
+#editor {
+    /** Setting height is also important, otherwise editor wont showup**/
+    height: 300px;
+}
+div.a {
+    text-align: left;
+    white-space: nowrap; 
+    width: 100px; 
+    overflow: hidden;
+    text-overflow: ellipsis; 
 }

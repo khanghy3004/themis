@@ -4,7 +4,6 @@ header('Content-Type: text/html; charset=UTF-8');
 require_once "mysql.php";
 require_once "sort_dir.php";
 $sltv      = 0;
-define("MAX_POINT", 10, true);
 $result = $conn->query("SELECT username FROM members WHERE id='{$user_id}'");
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
@@ -14,9 +13,9 @@ if ($result->num_rows > 0) {
 }
 //$conn->close();
 ?>
-<div class="container">
+
 <h3>Điểm hiện tại</h3>
-<table  class="table table-bordered table-hover" > <thead><td><b>Name</b></td>
+<table  class="table table-bordered table-hover" > <thead><td><b>Name</b></td><td><b>SLV.</b></td><td><b>TIME</b></td>
 <?php
 // so luong bai tap
 $slbt        = 0;
@@ -39,14 +38,15 @@ while ($it1->valid()) {
 }
 $chuanop = "∄ chưa nộp";
 for ($i = 1; $i <= $sltv; $i++) {
+    $total_solved[$tentv[$i]] = 0;
     for ($j = 1; $j <= $slbt; $j++) {
+        $total_tried_bai[$nameb[$j]] = 0;
+        $total_solved_bai[$nameb[$j]] = 0;
+        $first[$nameb[$j]] == false;
         $point[$tentv[$i]][$nameb[$j]] = $chuanop; //echo 1;
         $first_solve[$tentv[$i]][$nameb[$j]] = false;
         $pen[$tentv[$i]][$nameb[$j]] = 0;
     }
-}
-for ($i = 1; $i <= $slbt; $i++) {
-    $first[$nameb[$i]] == false;
 }
 
 $directory = 'nopbai/Logs/';
@@ -75,9 +75,8 @@ foreach($files_array as $file) {
 
     $hours = (int)($time/3600);
     $mins = (int)($time/60)%60;
-
-    if(!$check_solved[$user][$bai] && $user == $tentv[1]) {
-        preg_match('#: (.+?)\n#s', $data, $res);
+    preg_match('#: (.+?)\n#s', $data, $res);
+    if ($user == $tentv[1]) {
         if (strpos($res[1], $compile_err) !== false) {
             $check_compile_err = true;
             echo "<font color='red'><b>".$hours.":".$mins." ".$bai." ".$compile_err."</b></font><br>";
@@ -104,10 +103,13 @@ foreach($files_array as $file) {
         if ($user == $tentv[1] && !$check_time_limit && !$check_run_time && !$check_wrong_ans && !$check_compile_err) {
             echo "<font color='green'><b>".$hours.":".$mins." ".$bai." ".$accepted."</b></font><br>";
         }
+    }
+    if(!$check_solved[$user][$bai]) {
         if ($res[1] == MAX_POINT) {
             $check_solved[$user][$bai] = true;
             // add time
             $thoigian[$user][$bai] = $time+720*$pen[$user][$bai];
+            $total_solved[$user] += $pen[$user][$bai]+1;
         }
         
         // Lấy thông tin của username đã nhập trong table members
@@ -125,12 +127,14 @@ foreach($files_array as $file) {
         }
         // add more penalty
         $pen[$user][$bai] += 1;
+        // total tried
+        $total_tried_bai[$bai] += 1;
 
     }
     fclose($fi);
 
 }
-?><td><b>TIME</b></td></thead>
+?></thead>
 <?php
 $sumpoint[0] = 0;
 for ($i = 1; $i <= $sltv; $i++) {
@@ -176,7 +180,20 @@ $hours = (int)($tongthoigian[$pos[$i]]/3600);
 $mins = (int)($tongthoigian[$pos[$i]]/60)%60;
 
 for ($i = 1; $i <= $sltv; $i++) {
+
+    $hours = (int)($tongthoigian[$pos[$i]]/3600);
+    $mins = (int)($tongthoigian[$pos[$i]]/60)%60;
+    // Col name
     echo "<td>" . $arr_name[$pos[$i]] . "</td>";
+    // Col total solved
+    echo "<td>".$total_solved[$tentv[$pos[$i]]]."</td>";
+    // Col total time
+    if ($sumpoint[$pos[$i]] == 0) {
+        echo "<td><font color = red></font><br>"."</td>";
+    } else {
+        echo "<td>".$hours.":".$mins."</td>";
+        
+    }
     for ($j = 1; $j <= $slbt; $j++) {
         if ($point[$tentv[$pos[$i]]][$nameb[$j]] == MAX_POINT) {
             if ($first_solve[$tentv[$pos[$i]]][$nameb[$j]]) {
@@ -184,6 +201,8 @@ for ($i = 1; $i <= $sltv; $i++) {
             } else {
                 echo "<td class='solved'>".$pen[$tentv[$pos[$i]]][$nameb[$j]]."<br>".$hours.":".$mins."</td>";
             }
+            // total solved
+            $total_solved_bai[$nameb[$j]] += $pen[$tentv[$pos[$i]]][$nameb[$j]];
         } else if ($point[$tentv[$pos[$i]]][$nameb[$j]] == "∄ chưa nộp") {
             echo "<td bgcolor=''>" . $point[$tentv[$pos[$i]]][$nameb[$j]] . "</td>";
         } else {
@@ -191,15 +210,25 @@ for ($i = 1; $i <= $sltv; $i++) {
         } 
 
     }
-    if ($sumpoint[$pos[$i]] == 0) {
-        echo "<td><font color = red></font><br>"."</td></tr>";
-    } else {
-        echo "<td>".$hours.":".$mins."</td></tr>";
-    }
+    echo "</tr>";
 
 }
 ?>
 
-
+<tr>
+<th colspan="3">Solved / Tries</th>
+<?php
+    for ($i = 1; $i <= $slbt; $i++) {
+        $x = $total_solved_bai[$nameb[$i]];
+        $y = $total_tried_bai[$nameb[$i]];
+        if ($y==0) {
+            echo "<td><span><sup>".$x."</sup>/<sub>".$y."</sub><br>(0%)</span></td>";
+        }
+        else {
+            echo "<td><span><sup>".$x."</sup>/<sub>".$y."</sub><br>(".(int)($x/$y*100)."%)</span></td>";
+        }
+    }
+?>
+</tr>
 </table>
-</div>
+
