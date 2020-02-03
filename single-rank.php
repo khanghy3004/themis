@@ -176,13 +176,9 @@ for ($i = 1; $i < $sltv; $i++) {
     $pos[$max] = $z;
 }
 
-$hours = (int)($tongthoigian[$pos[$i]]/3600);
-$mins = (int)($tongthoigian[$pos[$i]]/60)%60;
-
 for ($i = 1; $i <= $sltv; $i++) {
-
-    $hours = (int)($tongthoigian[$pos[$i]]/3600);
-    $mins = (int)($tongthoigian[$pos[$i]]/60)%60;
+    // Total minutes
+    $total_mins = round($tongthoigian[$pos[$i]]/60);
     // Col name
     echo "<td>" . $arr_name[$pos[$i]] . "</td>";
     // Col total solved
@@ -191,22 +187,25 @@ for ($i = 1; $i <= $sltv; $i++) {
     if ($sumpoint[$pos[$i]] == 0) {
         echo "<td><font color = red></font><br>"."</td>";
     } else {
-        echo "<td>".$hours.":".$mins."</td>";
+        echo "<td>".$total_mins."</td>";
         
     }
     for ($j = 1; $j <= $slbt; $j++) {
+        // minutes of problems
+        $mins = round($thoigian[$tentv[$pos[$i]]][$nameb[$j]]/60);
+        // Check aceppted
         if ($point[$tentv[$pos[$i]]][$nameb[$j]] == MAX_POINT) {
             if ($first_solve[$tentv[$pos[$i]]][$nameb[$j]]) {
-                echo "<td class='solvedfirst'>".$pen[$tentv[$pos[$i]]][$nameb[$j]]."<br>".$hours.":".$mins."</td>";
+                echo "<td class='solvedfirst'>".$pen[$tentv[$pos[$i]]][$nameb[$j]]."<br>".$mins."</td>";
             } else {
-                echo "<td class='solved'>".$pen[$tentv[$pos[$i]]][$nameb[$j]]."<br>".$hours.":".$mins."</td>";
+                echo "<td class='solved'>".$pen[$tentv[$pos[$i]]][$nameb[$j]]."<br>".$mins."</td>";
             }
             // total solved
             $total_solved_bai[$nameb[$j]] += $pen[$tentv[$pos[$i]]][$nameb[$j]];
         } else if ($point[$tentv[$pos[$i]]][$nameb[$j]] == "∄ chưa nộp") {
             echo "<td bgcolor=''>" . $point[$tentv[$pos[$i]]][$nameb[$j]] . "</td>";
         } else {
-            echo "<td class='attempted'>".$pen[$tentv[$pos[$i]]][$nameb[$j]]."</td>";
+            echo "<td class='attempted'>".$pen[$tentv[$pos[$i]]][$nameb[$j]]."<br>--</td>";
         } 
 
     }

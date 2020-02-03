@@ -1,8 +1,0 @@
-﻿duy‣BCFACT: ℱ Dịch lỗi
-BCFACT.cpp
-Command: "D:\Program\Themis\GCC\bin\g++.exe" -o"BCFACT.exe" "BCFACT.cpp" -O2 -s -static -lm -x c++ terminated with exit code: 1
-BCFACT.cpp: In function 'int main()':
-BCFACT.cpp:10:5: error: expected initializer before 'while'
-     while(n!=0)
-     ^
-

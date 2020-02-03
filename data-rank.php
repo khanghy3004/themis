@@ -56,7 +56,7 @@ if ($result->num_rows > 0) {
 <!-- progress bar -->
 <div class="progress progress-striped active">
 <?php if ($progress < 100) {?>
-    <div class="progress-bar progress-bar-success" style="width: <?php echo $progress; ?>%"><?php echo (int)$progress; ?>%</div>;
+    <div class="progress-bar progress-bar-success" style="width: <?php echo $progress; ?>%"><?php echo (int)$progress; ?>%</div>
 <?php } else { ?>
     <div class="progress-bar progress-bar-success" style="width: 100%">Hết thời gian làm bài</div>;
 <?php
@@ -84,7 +84,7 @@ if ($result->num_rows > 0) {
 </div>
 <br>
 <br>
-<table  class="table table-bordered table-hover" > <thead><td><b><center>Rank</center></b></td><td><b>Name</b></td><td><b>SLV.</b></td><td><b>TIME</b></td>
+<table  class="table table-bordered table-hover" > <tr class='active'><td><b><center>Rank</center></b></td><td><b>Name</b></td><td><b>SLV.</b></td><td><b>TIME</b></td>
 <?php
 // so luong bai tap
 $slbt        = 0;
@@ -93,14 +93,14 @@ $it1         = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir
 
 while ($it1->valid()) {
     if (!$it1->isDot()) {
-        $Tenbai = $it1->getSubPathName();
-        $Tenbai = str_replace(".PDF", "", strtoupper($Tenbai));
-        $Tenbai = str_replace(".DOC", "", strtoupper($Tenbai));
+        $Tenbai = $it1->getSubPathName()[0];
+        $Tenduoi = substr($it1->getSubPathName(), -4);
+        $Tenchitiet = substr($it1->getSubPathName(), 2, -4);
         if ($dd[$Tenbai] != "true") {
             $slbt         = $slbt + 1;
             $nameb[$slbt] = $Tenbai;
             $dd[$Tenbai]  = "true";
-            echo "<td><a target='_blank' href='" . "http://" . $_SERVER['HTTP_HOST'] . "/themis/" . $directorydb . $it1->getSubPathName() . "'>" . $Tenbai . "</a></td>";
+            echo "<td><a target='_blank' href='" . "http://" . $_SERVER['HTTP_HOST'] . "/themis/" . $directorydb . $it1->getSubPathName() . "' title='".$Tenchitiet."'>" . $Tenbai . "</a></td>";
         }
     }
     $it1->next();
@@ -167,7 +167,7 @@ foreach($files_array as $file) {
     }
     fclose($fi);
 }
-?></thead>
+?></tr>
 <?php
 $sumpoint[0] = 0;
 for ($i = 1; $i <= $sltv; $i++) {
@@ -212,44 +212,46 @@ for ($i = 1; $i < $sltv; $i++) {
 for ($i = 1; $i <= $sltv; $i++) {
     // Col rank
     if ($i==1) {
-        echo "<tr><td><img src='./img/1st.png' height='30' width='33'></td>";
+        echo "<tr><td width='5%'><img src='./img/1st.png' height='30' width='33'></td>";
     } elseif ($i == 2) {
-        echo "<tr><td><img src='./img/2nd.png' height='30' width='33'></td>";
+        echo "<tr><td width='5%'><img src='./img/2nd.png' height='30' width='33'></td>";
     } elseif ($i == 3) {
-        echo "<tr><td><img src='./img/3rd.png' height='30' width='33'></td>";
+        echo "<tr><td width='5%'><img src='./img/3rd.png' height='30' width='33'></td>";
     } else {
-        echo "<tr><td><center><b>" . $i . "</b></td></center>";
+        echo "<tr><td width='5%'><center><b>" . $i . "</b></td></center>";
     }
-    
-    $hours = (int)($tongthoigian[$pos[$i]]/3600);
-    $mins = (int)($tongthoigian[$pos[$i]]/60)%60;
+    // Total minutes
+    $total_mins = round($tongthoigian[$pos[$i]]/60);
     // Col name
-    echo "<td>" . $arr_name[$pos[$i]] . "</td>";
+    echo "<td style='text-align: left;' height='50px'>" . $arr_name[$pos[$i]] . "</td>";
     // Col total solved
-    echo "<td>".$total_solved[$tentv[$pos[$i]]]."</td>";
+    echo "<td width='5%'>".$total_solved[$tentv[$pos[$i]]]."</td>";
     // Col total time
     if ($sumpoint[$pos[$i]] == 0) {
-        echo "<td><font color = red></font><br>"."</td>";
+        echo "<td width='5%'><font color = red></font><br>"."</td>";
     } else {
-        echo "<td>".$hours.":".$mins."</td>";
+        echo "<td width='5%'>".$total_mins."</td>";
         
     }
     // Col point
     for ($j = 1; $j <= $slbt; $j++) {
+        // minutes of problems
+        $mins = round($thoigian[$tentv[$pos[$i]]][$nameb[$j]]/60);
+        // Check aceppted
         if ($point[$tentv[$pos[$i]]][$nameb[$j]] == MAX_POINT) {
             if ($first_solve[$tentv[$pos[$i]]][$nameb[$j]]) { // Check first solved
-                echo "<td class='solvedfirst'>".$pen[$tentv[$pos[$i]]][$nameb[$j]]."<br>".$hours.":".$mins."</td>";
+                echo "<td class='solvedfirst' width='5%'>".$pen[$tentv[$pos[$i]]][$nameb[$j]]."<br>".$mins."</td>";
             } else {
-                echo "<td class='solved'>".$pen[$tentv[$pos[$i]]][$nameb[$j]]."<br>".$hours.":".$mins."</td>";
+                echo "<td class='solved' width='5%'>".$pen[$tentv[$pos[$i]]][$nameb[$j]]."<br>".$mins."</td>";
             }
             // total solved
             $total_solved_bai[$nameb[$j]] += $pen[$tentv[$pos[$i]]][$nameb[$j]];
         } else if ($point[$tentv[$pos[$i]]][$nameb[$j]] == "∄ chưa nộp") { 
-            echo "<td bgcolor=''>" . $point[$tentv[$pos[$i]]][$nameb[$j]] . "</td>"; // Not solved
+            echo "<td bgcolor='' width='5%'></td>"; // Not solved
         } else if ($point[$tentv[$pos[$i]]][$nameb[$j]] == "frozen") {  
-            echo "<td class='frozen'>".$pen[$tentv[$pos[$i]]][$nameb[$j]]."</td>"; // Pending
+            echo "<td class='frozen' width='5%'>".$pen[$tentv[$pos[$i]]][$nameb[$j]]."</td>"; // Pending
         } else {
-            echo "<td class='attempted'>".$pen[$tentv[$pos[$i]]][$nameb[$j]]."</td>"; // Wrong ans
+            echo "<td class='attempted' width='5%'>".$pen[$tentv[$pos[$i]]][$nameb[$j]]."<br>--</td>"; // Wrong ans
         } 
 
     }
