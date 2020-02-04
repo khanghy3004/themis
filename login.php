@@ -57,11 +57,11 @@ print <<<EOF
   <form action="login.php?act=do&CBHT=login" method="post">
     <div class="form-group">
       <label for="username">Username:</label>
-      <input type="text" class="form-control" placeholder="Username" name="username">
+      <input type="text" class="form-control" placeholder="Username" name="username" required>
     </div>
     <div class="form-group">
       <label for="password">Password:</label>
-      <input id="password-field" type="password" class="form-control" placeholder="Password" name="password">
+      <input id="password-field" type="password" class="form-control" placeholder="Password" name="password" required>
     </div>
     <div class="form-group">
    <input type="checkbox" onclick="showpassword()"> Show password</div>

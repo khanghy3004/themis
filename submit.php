@@ -44,15 +44,15 @@ if ($days1 > 0 && $days2 > 0) {
         if (!isset($_GET['act']) && $_GET['act'] != "do1" && $_GET['act'] != "do") {
                     ?>
                 <ul class="nav nav-tabs">
-                  <li class="active"><a data-toggle="tab" href="#home">Nộp file</a></li>
-                  <li><a data-toggle="tab" href="#menu1">Chỉnh sửa trực tiếp</a></li>
+                  <li class="active"><a data-toggle="tab" href="#home">Submit file</a></li>
+                  <li><a data-toggle="tab" href="#menu1">Editor</a></li>
                 </ul>
                 <div class="tab-content">
                     <div id="home" class="tab-pane fade in active">
                         <br>
                         <form action="?CBHT=submit&act=do" method="post" enctype="multipart/form-data">
-                            <p>Chọn bài làm:</p>
-                            <p>Hệ thống chỉ cho phép nộp các file *.pas, *.pp, *.cpp, *.java, *.c, *.py</p>
+                            <p>Select file</p>
+                            <p>The system only allows file types *.pas, *.pp, *.cpp, *.java, *.c, *.py</p>
                             <p>
                                 <input type="file" name="fileToUpload" id="fileToUpload">
                             </p>
@@ -64,7 +64,7 @@ if ($days1 > 0 && $days2 > 0) {
                         <form action="?CBHT=submit&act=do1" method="post" enctype="multipart/form-data">
                             <br>
                             <div class="form-group">
-                                <label for="exampleFormControlSelect1">Chọn tên bài</label>
+                                <label for="exampleFormControlSelect1">Problem</label>
                                 <select class="form-control" name="tenbai">
                                   <option>A</option>
                                   <option>B</option>
@@ -76,7 +76,7 @@ if ($days1 > 0 && $days2 > 0) {
                                   <option>H</option>
                                   <option>I</option>
                                 </select>
-                                <label for="exampleFormControlSelect1">Chọn ngôn ngữ</label>
+                                <label for="exampleFormControlSelect1">Language</label>
                                 <select class="form-control" name="ngonngu" id="ngonngu">
                                   <option>C</option>
                                   <option>C++</option>
@@ -114,7 +114,6 @@ if ($days1 > 0 && $days2 > 0) {
                                     </script>
                                 </div>
                             </div>
-                            <input type="hidden" id="demo1" name="demo1">
                             <input type="submit" class="btn btn-success" value="Submit" name="submit">
                         </form>
                     </div>
@@ -139,11 +138,11 @@ if ($days1 > 0 && $days2 > 0) {
             $target_file = $target_dir . $namefile;
             if ($_POST['content'] != "") {
                 file_put_contents($target_file, $_POST['content']);
-                echo "<SCRIPT LANGUAGE='JavaScript'>alert('Bạn đã nộp bài thành công');</script>";
+                echo "<SCRIPT LANGUAGE='JavaScript'>alert('Submit successfully!');</script>";
                 echo "<font color=green><b>Tài khoản {$member['username']} đã nộp bài " . basename($_FILES["fileToUpload"]["name"]) . " thành công.</b></font><br>";
                 print "<meta http-equiv='refresh' content='0; ?CBHT=submit'>";
             } else {
-                echo "<font color=red><b>Nộp bài không thành công</b></font><br>";
+                echo "<font color=red><b>Submit Error!</b></font><br>";
             }
             
         }
@@ -167,22 +166,22 @@ if ($days1 > 0 && $days2 > 0) {
             $ngonngubailam = strtoupper(pathinfo($target_file, PATHINFO_EXTENSION));
 
             if ($_FILES["fileToUpload"]["size"] > 500000) {
-                echo "File của bạn có kích cỡ quá lớn.<br>";
+                echo "Your file size is too big.<br>";
                 $uploadOk = 0;
             }
 
             if ($ngonngubailam != "PAS" && $ngonngubailam != "PP" && $ngonngubailam != "CPP"
                 && $ngonngubailam != "JAVA" && $ngonngubailam != "C" && $ngonngubailam != "PY") {
-                echo "Hệ thống chỉ cho phép nộp các file *.pas, *.pp, *.cpp, *.java, *.c, *.py<br>";
+                echo "The system only allows file types *.pas, *.pp, *.cpp, *.java, *.c, *.py<br>";
                 $uploadOk = 0;
             }
             // Check if $uploadOk is set to 0 by an error
             if ($uploadOk == 0) {
-                echo "<font color=red><b>Nộp bài không thành công</b></font><br>";
+                echo "<font color=red><b>Submit Error!</b></font><br>";
                 // if everything is ok, try to upload file
             } else {
                 if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {           
-                    echo "<SCRIPT LANGUAGE='JavaScript'>alert('Bạn đã nộp bài thành công');</script>";
+                    echo "<SCRIPT LANGUAGE='JavaScript'>alert('Submit successfully!');</script>";
                     echo "<font color=green><b>Tài khoản {$member['username']} đã nộp bài " . basename($_FILES["fileToUpload"]["name"]) . " thành công.</b></font><br>";
                     print "<meta http-equiv='refresh' content='0; ?CBHT=submit'>";
                     //print "<meta http-equiv='refresh' content='0; /?CBHT=rank'>";
@@ -192,7 +191,7 @@ if ($days1 > 0 && $days2 > 0) {
             }
         } 
     } else {
-        echo "Bạn chưa đăng nhập, vui lòng đăng nhập để tiếp tục";
+        echo "Please login to continue!";
     }
 
 }

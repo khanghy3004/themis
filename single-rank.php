@@ -14,8 +14,8 @@ if ($result->num_rows > 0) {
 //$conn->close();
 ?>
 
-<h3>Điểm hiện tại</h3>
-<table  class="table table-bordered table-hover" > <thead><td><b>Name</b></td><td><b>SLV.</b></td><td><b>TIME</b></td>
+<h3>Your point</h3>
+<table  class="table table-bordered table-hover" > <tr class="active"><td><b>Name</b></td><td width="5%"><b>SLV.</b></td><td width="5%"><b>TIME</b></td>
 <?php
 // so luong bai tap
 $slbt        = 0;
@@ -24,14 +24,14 @@ $it1         = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir
 
 while ($it1->valid()) {
     if (!$it1->isDot()) {
-        $Tenbai = $it1->getSubPathName();
-        $Tenbai = str_replace(".PDF", "", strtoupper($Tenbai));
-        $Tenbai = str_replace(".DOC", "", strtoupper($Tenbai));
+        $Tenbai = $it1->getSubPathName()[0];
+        $Tenduoi = substr($it1->getSubPathName(), -4);
+        $Tenchitiet = substr($it1->getSubPathName(), 2, -4);
         if ($dd[$Tenbai] != "true") {
             $slbt         = $slbt + 1;
             $nameb[$slbt] = $Tenbai;
             $dd[$Tenbai]  = "true";
-            echo "<td><a target='_blank' href='" . "http://" . $_SERVER['HTTP_HOST'] . "/themis/" . $directorydb . $it1->getSubPathName() . "'>" . $Tenbai . "</a></td>";
+            echo "<td  width='6%'><a target='_blank' href='" . "http://" . $_SERVER['HTTP_HOST'] . "/themis/" . $directorydb . $it1->getSubPathName() . "' data-title='".$Tenchitiet."'>" . $Tenbai . "</a></td>";
         }
     }
     $it1->next();
@@ -79,29 +79,29 @@ foreach($files_array as $file) {
     if ($user == $tentv[1]) {
         if (strpos($res[1], $compile_err) !== false) {
             $check_compile_err = true;
-            echo "<font color='red'><b>".$hours.":".$mins." ".$bai." ".$compile_err."</b></font><br>";
+            echo "<font color='red'><b>".$hours.":".$mins." ".$bai." Compile Error</b></font><br>";
         }
 
         while (($buffer = fgets($fi)) !== false) {
             if (strpos($buffer, $time_limit) !== false) {
                 $check_time_limit = true;
-                echo "<font color='red'><b>".$hours.":".$mins." ".$bai." ".$buffer."</b></font><br>";
+                echo "<font color='red'><b>".$hours.":".$mins." ".$bai." Time Limit Exceeded</b></font><br>";
                 break;
             }
             if (strpos($buffer, $run_time) !== false) {
                 $check_run_time = true;
-                echo "<font color='red'><b>".$hours.":".$mins." ".$bai." ".$buffer."</b></font><br>";
+                echo "<font color='red'><b>".$hours.":".$mins." ".$bai." Run Time Error</b></font><br>";
                 break;
             }
             if (strpos($buffer, $wrong_ans) !== false) {
                 $check_wrong_ans = true;
-                echo "<font color='red'><b>".$hours.":".$mins." ".$bai." ".$buffer."</b></font><br>";
+                echo "<font color='red'><b>".$hours.":".$mins." ".$bai." Wrong Answer</b></font><br>";
                 break;
             }
             
         }
         if ($user == $tentv[1] && !$check_time_limit && !$check_run_time && !$check_wrong_ans && !$check_compile_err) {
-            echo "<font color='green'><b>".$hours.":".$mins." ".$bai." ".$accepted."</b></font><br>";
+            echo "<font color='green'><b>".$hours.":".$mins." ".$bai." Accepted</b></font><br>";
         }
     }
     if(!$check_solved[$user][$bai]) {
@@ -134,7 +134,7 @@ foreach($files_array as $file) {
     fclose($fi);
 
 }
-?></thead>
+?></tr>
 <?php
 $sumpoint[0] = 0;
 for ($i = 1; $i <= $sltv; $i++) {
@@ -203,7 +203,7 @@ for ($i = 1; $i <= $sltv; $i++) {
             // total solved
             $total_solved_bai[$nameb[$j]] += $pen[$tentv[$pos[$i]]][$nameb[$j]];
         } else if ($point[$tentv[$pos[$i]]][$nameb[$j]] == "∄ chưa nộp") {
-            echo "<td bgcolor=''>" . $point[$tentv[$pos[$i]]][$nameb[$j]] . "</td>";
+            echo "<td bgcolor=''></td>";
         } else {
             echo "<td class='attempted'>".$pen[$tentv[$pos[$i]]][$nameb[$j]]."<br>--</td>";
         } 

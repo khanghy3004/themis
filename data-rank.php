@@ -41,14 +41,14 @@ if ($result->num_rows > 0) {
 
 <div class="container">
 <div class="col-md-3 text-left no-pad">
-    <h4>Start</h4>
+    <h4><b>Start</b></h4>
     <?php echo $begin; ?>
 </div>
 <div class="col-md-6 text-center">
     <h2 class="title"><?php echo $cname; ?></h2>
 </div>
 <div class="col-md-3 text-right no-pad">
-    <h4>End</h4>
+    <h4><b>End</b></h4>
     <?php echo $date; ?>
 </div>
 </div>
@@ -84,7 +84,7 @@ if ($result->num_rows > 0) {
 </div>
 <br>
 <br>
-<table  class="table table-bordered table-hover" > <tr class='active'><td><b><center>Rank</center></b></td><td><b>Name</b></td><td><b>SLV.</b></td><td><b>TIME</b></td>
+<table  class="table table-bordered table-hover" > <tr class="active"><td width="5%"><b><center>Rank</center></b></td><td><b>Name</b></td><td width="5%"><b>SLV.</b></td><td width="5%"><b>TIME</b></td>
 <?php
 // so luong bai tap
 $slbt        = 0;
@@ -100,7 +100,7 @@ while ($it1->valid()) {
             $slbt         = $slbt + 1;
             $nameb[$slbt] = $Tenbai;
             $dd[$Tenbai]  = "true";
-            echo "<td><a target='_blank' href='" . "http://" . $_SERVER['HTTP_HOST'] . "/themis/" . $directorydb . $it1->getSubPathName() . "' title='".$Tenchitiet."'>" . $Tenbai . "</a></td>";
+            echo "<td  width='6%'><a target='_blank' href='" . "http://" . $_SERVER['HTTP_HOST'] . "/themis/" . $directorydb . $it1->getSubPathName() . "' data-title='".$Tenchitiet."'>" . $Tenbai . "</a></td>";
         }
     }
     $it1->next();
@@ -116,6 +116,7 @@ for ($i = 1; $i <= $sltv; $i++) {
         $first_solve[$tentv[$i]][$nameb[$j]] = false;
         $check_solved[$tentv[$i]][$nameb[$j]] = false;
         $pen[$tentv[$i]][$nameb[$j]] = 0;
+        $froz[$tentv[$i]][$nameb[$j]] = 0;
     }
 }
 
@@ -147,8 +148,9 @@ foreach($files_array as $file) {
         // check pending
         if ($frozen == "frozen") {
             $point[$user][$bai] = "frozen";
-            $pen[$user][$bai]-=1;
+            $pen[$user][$bai] -= 1;
             $total_tried_bai[$bai] -= 1;
+            $froz[$user][$bai] += 1;
         } else { 
 
             if ($res[1]<MAX_POINT) $res[1]=0;
@@ -212,25 +214,25 @@ for ($i = 1; $i < $sltv; $i++) {
 for ($i = 1; $i <= $sltv; $i++) {
     // Col rank
     if ($i==1) {
-        echo "<tr><td width='5%'><img src='./img/1st.png' height='30' width='33'></td>";
+        echo "<tr><td><img src='./img/1st.png' height='30' width='33'></td>";
     } elseif ($i == 2) {
-        echo "<tr><td width='5%'><img src='./img/2nd.png' height='30' width='33'></td>";
+        echo "<tr><td><img src='./img/2nd.png' height='30' width='33'></td>";
     } elseif ($i == 3) {
-        echo "<tr><td width='5%'><img src='./img/3rd.png' height='30' width='33'></td>";
+        echo "<tr><td><img src='./img/3rd.png' height='30' width='33'></td>";
     } else {
-        echo "<tr><td width='5%'><center><b>" . $i . "</b></td></center>";
+        echo "<tr><td><center><b>" . $i . "</b></td></center>";
     }
     // Total minutes
     $total_mins = round($tongthoigian[$pos[$i]]/60);
     // Col name
     echo "<td style='text-align: left;' height='50px'>" . $arr_name[$pos[$i]] . "</td>";
     // Col total solved
-    echo "<td width='5%'>".$total_solved[$tentv[$pos[$i]]]."</td>";
+    echo "<td>".$total_solved[$tentv[$pos[$i]]]."</td>";
     // Col total time
     if ($sumpoint[$pos[$i]] == 0) {
-        echo "<td width='5%'><font color = red></font><br>"."</td>";
+        echo "<td><font color = red></font><br>"."</td>";
     } else {
-        echo "<td width='5%'>".$total_mins."</td>";
+        echo "<td>".$total_mins."</td>";
         
     }
     // Col point
@@ -240,18 +242,18 @@ for ($i = 1; $i <= $sltv; $i++) {
         // Check aceppted
         if ($point[$tentv[$pos[$i]]][$nameb[$j]] == MAX_POINT) {
             if ($first_solve[$tentv[$pos[$i]]][$nameb[$j]]) { // Check first solved
-                echo "<td class='solvedfirst' width='5%'>".$pen[$tentv[$pos[$i]]][$nameb[$j]]."<br>".$mins."</td>";
+                echo "<td class='solvedfirst'>".$pen[$tentv[$pos[$i]]][$nameb[$j]]."<br>".$mins."</td>";
             } else {
-                echo "<td class='solved' width='5%'>".$pen[$tentv[$pos[$i]]][$nameb[$j]]."<br>".$mins."</td>";
+                echo "<td class='solved'>".$pen[$tentv[$pos[$i]]][$nameb[$j]]."<br>".$mins."</td>";
             }
             // total solved
             $total_solved_bai[$nameb[$j]] += $pen[$tentv[$pos[$i]]][$nameb[$j]];
         } else if ($point[$tentv[$pos[$i]]][$nameb[$j]] == "∄ chưa nộp") { 
-            echo "<td bgcolor='' width='5%'></td>"; // Not solved
+            echo "<td bgcolor=''></td>"; // Not solved
         } else if ($point[$tentv[$pos[$i]]][$nameb[$j]] == "frozen") {  
-            echo "<td class='frozen' width='5%'>".$pen[$tentv[$pos[$i]]][$nameb[$j]]."</td>"; // Pending
+            echo "<td class='frozen'>".$pen[$tentv[$pos[$i]]][$nameb[$j]]." + ".$froz[$tentv[$pos[$i]]][$nameb[$j]]."</td>"; // Pending
         } else {
-            echo "<td class='attempted' width='5%'>".$pen[$tentv[$pos[$i]]][$nameb[$j]]."<br>--</td>"; // Wrong ans
+            echo "<td class='attempted'>".$pen[$tentv[$pos[$i]]][$nameb[$j]]."<br>--</td>"; // Wrong ans
         } 
 
     }

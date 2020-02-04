@@ -33,8 +33,8 @@ if (!isset($_GET["CBHT"])) {
         if (!isset($_GET['act']) && $_GET['act'] != "do1" && $_GET['act'] != "do") {
                     ?>
                 <ul class="nav nav-tabs">
-                  <li class="active"><a data-toggle="tab" href="#home">Danh sách câu hỏi</a></li>
-                  <li><a data-toggle="tab" href="#menu1">Gửi câu hỏi</a></li>
+                  <li class="active"><a data-toggle="tab" href="#home">Question List</a></li>
+                  <li><a data-toggle="tab" href="#menu1">Send a question</a></li>
                 </ul>
                 <div class="tab-content">
                     <div id="home" class="tab-pane fade in active">
@@ -42,26 +42,26 @@ if (!isset($_GET["CBHT"])) {
                         <table class="table table-bordered table-hover">
                         <thead>
                           <tr>
-                            <th><center>Người gửi</center></th>
-                            <th><center>Mã bài</center></th>
-                            <th><center>Câu hỏi</center></th>
-                            <th><center>Trả lời</center></th>
-                            <th><center>Trạng thái</center></th>
+                            <th><center>Sender</center></th>
+                            <th><center>Problem</center></th>
+                            <th><center>Question</center></th>
+                            <th><center>Answer</center></th>
+                            <th><center>Status</center></th>
                           </tr>
                         </thead>
                         <tbody>
                             <?php
                             for ($i=0; $i<sizeof($arr); $i++) {
                                 if ($arr[$i][5]) {
-                                    $arr[$i][5] = "Đã xử lí";
+                                    $arr[$i][5] = "Solved";
                                 } else {
-                                    $arr[$i][5] = "Chưa xử lí";
+                                    $arr[$i][5] = "Not Solved";
                                 }
                             ?>
                                 <tr>
                                 <td><?php echo $arr[$i][1] ?></td>
                                 <td><?php echo $arr[$i][2] ?></td>
-                                <td><a href="?CBHT=help&dataid=<?php echo $i;?>"><?php echo $arr[$i][3] ?></a></td>
+                                <td><div class="a"><a href="?CBHT=help&dataid=<?php echo $i;?>"><?php echo $arr[$i][3] ?></a></div></td>
                                 <td><div class="a"><?php echo $arr[$i][4] ?></div></td>
                                 <td><?php echo $arr[$i][5] ?></td>
                                 </tr>
@@ -80,18 +80,22 @@ if (!isset($_GET["CBHT"])) {
                                   <div class="modal-content">
                                     <div class="modal-header">
                                       <button onclick = "$('.modal').removeClass('show').addClass('fade');" type="button" class="close" data-dismiss="modal">&times;</button>
-                                      <h4 class="modal-title">Chi tiết câu hỏi bài <?php echo $data[2]; ?> </h4>
+                                      <h4 class="modal-title">Question detail problem <?php echo $data[2]; ?> </h4>
                                     </div>
                                     <div class="modal-body">
                                         <?php 
-                                        echo "<b>Người gửi: </b>";
+                                        echo "<b>Sender: </b>";
                                         echo $data[1];
-                                        echo "<br><b>Câu hỏi</b><br>".$data[3];
+                                        echo "<br><b>Question:</b><br>".$data[3];
                                         echo "<form action='' id='usrform' method='post'>";
                                         echo "<input type='hidden' name='id' value=".$data[0].">";
-                                        echo"<div class='form-group'><label>Trả lời:</label><textarea class='form-control' rows='5' id='answer' name='answer' form='usrform'>".$data[4]."</textarea></div>";
+                                        
                                         if ($member['admin'] == 1) {
-                                            echo "<br><input type='submit' class='btn btn-success' value='Cập nhật câu trả lời' name='submit'>";
+                                            echo"<div class='form-group'><label>Answer:</label><textarea class='form-control' rows='5' id='answer' name='answer' form='usrform' required>".$data[4]."</textarea></div>";
+                                            echo "<br><input type='submit' class='btn btn-success' value='Edit answer' name='submit'>";
+                                            echo "</form>";
+                                        } else {
+                                            echo"<div class='form-group'><label>Answer:</label><textarea readonly class='form-control' rows='5' id='answer' name='answer' form='usrform'>".$data[4]."</textarea></div>";
                                             echo "</form>";
                                         }
                                         ?>
@@ -123,7 +127,7 @@ if (!isset($_GET["CBHT"])) {
                         <form action="" method="post" enctype="multipart/form-data">
                             <br>
                             <div class="form-group">
-                                <label for="exampleFormControlSelect1">Chọn tên bài</label>
+                                <label for="exampleFormControlSelect1">Problem</label>
                                 <select class="form-control" name="tenbai">
                                   <option>A</option>
                                   <option>B</option>
@@ -137,8 +141,8 @@ if (!isset($_GET["CBHT"])) {
                                 </select>
                             </div>
                             <div class="form-group">
-                              <label>Câu hỏi:</label>
-                              <textarea class="form-control" rows="5" id="question" name="question"></textarea>
+                              <label>Question:</label>
+                              <textarea class="form-control" rows="5" id="question" name="question" required></textarea>
                             </div>
                             <input type="submit" class="btn btn-success" value="Submit" name="submit">
                         </form>
@@ -182,7 +186,7 @@ if (!isset($_GET["CBHT"])) {
         }
        
     } else {
-        echo "Bạn chưa đăng nhập, vui lòng đăng nhập để tiếp tục";
+        echo "Please login to continue!";
     }
 
 ?>

@@ -17,11 +17,11 @@
     var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
     var seconds = Math.floor((distance % (1000 * 60)) / 1000);
     // Output the result in an element with id="demo"
-    document.getElementById("demo").innerHTML = "<b><p>Bài thi bắt đầu sau</p></b>"+ "<div class='count-down-time'><div class='count-down-part count-down-days' data-label='Days'>"+days+"</div>:<div class='count-down-part count-down-hours' data-label='Hours'>"+hours+"</div>:<div class='count-down-part count-down-minutes' data-label='Minutes'>"+minutes+"</div>:<div class='count-down-part count-down-seconds' data-label='Seconds'>"+seconds+"</div></div>";
+    document.getElementById("demo").innerHTML = "<b><p>Contest start after</p></b>"+ "<div class='count-down-time'><div class='count-down-part count-down-days' data-label='Days'>"+days+"</div>:<div class='count-down-part count-down-hours' data-label='Hours'>"+hours+"</div>:<div class='count-down-part count-down-minutes' data-label='Minutes'>"+minutes+"</div>:<div class='count-down-part count-down-seconds' data-label='Seconds'>"+seconds+"</div></div>";
     // If the count down is over, write some text
     if (distance < 0) {
       clearInterval(x);
-      document.getElementById("demo").innerHTML = "Bắt đầu làm bài";
+      document.getElementById("demo").innerHTML = "Start";
         var y = setInterval(function() {
           now = now + 1000;
           // Find the distance between now an the count down date
@@ -32,11 +32,11 @@
           var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
           var seconds = Math.floor((distance % (1000 * 60)) / 1000);
           // Output the result in an element with id="demo"
-          document.getElementById("demo").innerHTML = "<b><p>Thời gian làm bài</p></b>"+ "<div class='count-down-time'><div class='count-down-part count-down-days' data-label='Days'>"+days+"</div>:<div class='count-down-part count-down-hours' data-label='Hours'>"+hours+"</div>:<div class='count-down-part count-down-minutes' data-label='Minutes'>"+minutes+"</div>:<div class='count-down-part count-down-seconds' data-label='Seconds'>"+seconds+"</div></div>";
+          document.getElementById("demo").innerHTML = "<b><p>Time remaining</p></b>"+ "<div class='count-down-time'><div class='count-down-part count-down-days' data-label='Days'>"+days+"</div>:<div class='count-down-part count-down-hours' data-label='Hours'>"+hours+"</div>:<div class='count-down-part count-down-minutes' data-label='Minutes'>"+minutes+"</div>:<div class='count-down-part count-down-seconds' data-label='Seconds'>"+seconds+"</div></div>";
           // If the count down is over, write some text
           if (distance < 0) {
             clearInterval(y);
-            document.getElementById("demo").innerHTML = "<font color=red><b><p>Hết thời gian làm bài</p></b></font>";
+            document.getElementById("demo").innerHTML = "<font color=red><b><p>Contest is over</p></b></font>";
             return;
           }
 
