@@ -1,4 +1,5 @@
-# Themis
+# Themis  ![](https://badgen.net/badge/icon/awesome?icon=awesome&label&color=green) ![](https://badgen.net/badge/icon/chrome?icon=chrome&label&color=orange) ![](https://badgen.net/badge/icon/firefox?icon=firefox&label&color=red)
+
 Website integrated program Themis.
 
 The website submits and marks online via LAN or WAN.
