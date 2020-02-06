@@ -21,7 +21,7 @@
     // If the count down is over, write some text
     if (distance < 0) {
       clearInterval(x);
-      document.getElementById("demo").innerHTML = "Start";
+      document.getElementById("demo").innerHTML = "";
         var y = setInterval(function() {
           now = now + 1000;
           // Find the distance between now an the count down date

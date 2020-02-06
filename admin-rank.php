@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 header('Content-Type: text/html; charset=UTF-8');
 require_once "mysql.php";
@@ -117,7 +117,6 @@ for ($i = 1; $i <= $sltv; $i++) {
         $first_solve[$tentv[$i]][$nameb[$j]] = false;
         $check_solved[$tentv[$i]][$nameb[$j]] = false;
         $pen[$tentv[$i]][$nameb[$j]] = 0;
-        $froz[$tentv[$i]][$nameb[$j]] = 0;
     }
 }
 
@@ -127,7 +126,6 @@ $files_array = better_scandir($directory);
 foreach($files_array as $file) {
     $datainfo = $file;
     $r        = explode(']', $datainfo);
-    $frozen   = trim($r[0], '[');
     $time     = trim($r[1], '[');
     $user     = trim($r[2], '[');
     $bai      = strtoupper(trim($r[3], '['));
@@ -139,30 +137,23 @@ foreach($files_array as $file) {
     preg_match('#: (.+?)\n#s', $data, $res);
     // check max point
     if(!$check_solved[$user][$bai]) {
-        if ($res[1] == MAX_POINT && $frozen != "frozen" ) {
+        if ($res[1] == MAX_POINT) {
             $check_solved[$user][$bai] = true;
             // add time
             $thoigian[$user][$bai] = $time+720*$pen[$user][$bai];
             $total_solved[$user] += $pen[$user][$bai]+1;
         }
         
-        // check pending
-        if ($frozen == "frozen") {
-            $point[$user][$bai] = "frozen";
-            $pen[$user][$bai] -= 1;
-            $total_tried_bai[$bai] -= 1;
-            $froz[$user][$bai] += 1;
-        } else { 
 
-            if ($res[1]<MAX_POINT) $res[1]=0;
+        if ($res[1]<MAX_POINT) $res[1]=0;
 
-            $point[$user][$bai] = $res[1];
-            // Check first solve
-            if(!$first[$bai] && $point[$user][$bai] == MAX_POINT) {
-                $first[$bai] = true;
-                $first_solve[$user][$bai] = true;
-            }   
-        }
+        $point[$user][$bai] = $res[1];
+        // Check first solve
+        if(!$first[$bai] && $point[$user][$bai] == MAX_POINT) {
+            $first[$bai] = true;
+            $first_solve[$user][$bai] = true;
+        }   
+
         // add more penalty
         $pen[$user][$bai] += 1; 
         // total tried
@@ -251,8 +242,6 @@ for ($i = 1; $i <= $sltv; $i++) {
             $total_solved_bai[$nameb[$j]] += $pen[$tentv[$pos[$i]]][$nameb[$j]];
         } else if ($point[$tentv[$pos[$i]]][$nameb[$j]] == "∄ chưa nộp") { 
             echo "<td bgcolor=''></td>"; // Not solved
-        } else if ($point[$tentv[$pos[$i]]][$nameb[$j]] == "frozen") {  
-            echo "<td class='frozen'>".$pen[$tentv[$pos[$i]]][$nameb[$j]]." + ".$froz[$tentv[$pos[$i]]][$nameb[$j]]."</td>"; // Pending
         } else {
             echo "<td class='attempted'>".$pen[$tentv[$pos[$i]]][$nameb[$j]]."<br>--</td>"; // Wrong ans
         } 

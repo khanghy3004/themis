@@ -14,8 +14,8 @@ if ($result->num_rows > 0) {
 //$conn->close();
 ?>
 
-<h3>Your point</h3>
-<table  class="table table-bordered table-hover" > <tr class="active"><td><b>Name</b></td><td width="5%"><b>SLV.</b></td><td width="5%"><b>TIME</b></td>
+<h3>Submissions</h3>
+<table  class="table table-bordered table-hover text-center" > <thead class="thead-light"><tr><th width="1"><b>SUBMISSION</b></th><th ><b>TIME</b></th><th ><b>PROBLEM</b></th><th ><b>STATUS</b></th></thead>
 <?php
 // so luong bai tap
 $slbt        = 0;
@@ -30,8 +30,8 @@ while ($it1->valid()) {
         if ($dd[$Tenbai] != "true") {
             $slbt         = $slbt + 1;
             $nameb[$slbt] = $Tenbai;
+            $namechitiet[$nameb[$slbt]] = $Tenchitiet;
             $dd[$Tenbai]  = "true";
-            echo "<td  width='6%'><a target='_blank' href='" . "http://" . $_SERVER['HTTP_HOST'] . "/themis/" . $directorydb . $it1->getSubPathName() . "' data-title='".$Tenchitiet."'>" . $Tenbai . "</a></td>";
         }
     }
     $it1->next();
@@ -49,10 +49,18 @@ for ($i = 1; $i <= $sltv; $i++) {
     }
 }
 
-$directory = 'nopbai/Logs/';
-$it        = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory));
-$files_array = better_scandir($directory);
+$directory    = 'nopbai/Logs/';
+$directory2   = 'thumucbailam/'.$tentv[1].'/';
+$it           = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory));
+$files_array  = array_reverse(better_scandir($directory));
+$search_array = array_reverse(search_file($directory2));
 
+?>
+
+
+<?php
+
+$fileid = 0;
 foreach($files_array as $file) {
     $datainfo = $file;
     $r        = explode(']', $datainfo);
@@ -60,6 +68,7 @@ foreach($files_array as $file) {
     $time     = trim($r[1], '[');
     $user     = trim($r[2], '[');
     $bai      = strtoupper(trim($r[3], '['));
+    $ngonngu  = ".".explode('.', $datainfo)[1];
     $link     = $directory . $file;
     $fi       = fopen($link, "r");
     $data     = fgets($fi);
@@ -75,159 +84,73 @@ foreach($files_array as $file) {
 
     $hours = (int)($time/3600);
     $mins = (int)($time/60)%60;
+    $secs = (int)($time%60);
     preg_match('#: (.+?)\n#s', $data, $res);
     if ($user == $tentv[1]) {
         if (strpos($res[1], $compile_err) !== false) {
             $check_compile_err = true;
-            echo "<font color='red'><b>".$hours.":".$mins." ".$bai." Compile Error</b></font><br>";
+            echo "<tr><td><a href='?CBHT=submit&fileid=".$fileid."'>".$bai.$ngonngu."</a></td><td>".$hours.":".$mins.":".$secs."</td><td>".$namechitiet[$bai]."</td><td><font color='red'><b>Compile Error</b></font></td></tr>";
         }
 
         while (($buffer = fgets($fi)) !== false) {
             if (strpos($buffer, $time_limit) !== false) {
                 $check_time_limit = true;
-                echo "<font color='red'><b>".$hours.":".$mins." ".$bai." Time Limit Exceeded</b></font><br>";
+                echo "<tr><td><a href='?CBHT=submit&fileid=".$fileid."'>".$bai.$ngonngu."</a></td><td>".$hours.":".$mins.":".$secs."</td><td>".$namechitiet[$bai]."</td><td><font color='red'><b>Time Limit Exceeded</b></font></td></tr>";
                 break;
             }
             if (strpos($buffer, $run_time) !== false) {
                 $check_run_time = true;
-                echo "<font color='red'><b>".$hours.":".$mins." ".$bai." Run Time Error</b></font><br>";
+                echo "<tr><td><a href='?CBHT=submit&fileid=".$fileid."'>".$bai.$ngonngu."</a></td><td>".$hours.":".$mins.":".$secs."</td><td>".$namechitiet[$bai]."</td><td><font color='red'><b>Run Time Error</b></font></td></tr>";
                 break;
             }
             if (strpos($buffer, $wrong_ans) !== false) {
                 $check_wrong_ans = true;
-                echo "<font color='red'><b>".$hours.":".$mins." ".$bai." Wrong Answer</b></font><br>";
+                echo "<tr><td><a href='?CBHT=submit&fileid=".$fileid."'>".$bai.$ngonngu."</a></td><td>".$hours.":".$mins.":".$secs."</td><td>".$namechitiet[$bai]."</td><td><font color='red'><b>Wrong Answer</b></font></td></tr>";
                 break;
             }
             
         }
         if ($user == $tentv[1] && !$check_time_limit && !$check_run_time && !$check_wrong_ans && !$check_compile_err) {
-            echo "<font color='green'><b>".$hours.":".$mins." ".$bai." Accepted</b></font><br>";
+            echo "<tr><td><a href='?CBHT=submit&fileid=".$fileid."'>".$bai.$ngonngu."</a></td><td>".$hours.":".$mins.":".$secs."</td><td>".$namechitiet[$bai]."</td><td><font color='green'><b>Accepted</b></font></td></tr>";
+        }
+        $fileid++;
+        if (isset($_GET['fileid'])) {
+            $file = $search_array[$_GET['fileid']];
+            ?>
+            <div class="modal fade" id="myModal">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">File detail <?php $namebai=explode('/', $file); echo end($namebai); ?></h4>
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div id="editor1"><?php 
+                    echo htmlspecialchars(file_get_contents($file));
+                    ?></div>
+                    <script type="text/javascript">
+                    var editor1 = ace.edit("editor1");
+                    editor1.setTheme("ace/theme/");
+                    editor1.getSession().setMode("ace/mode/c_cpp");
+                    document.getElementById('editor1').style.fontSize = '15px';
+                    </script>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+                
+              </div>
+            </div>
+          </div>
+            
+            <?php
         }
     }
-    if(!$check_solved[$user][$bai]) {
-        if ($res[1] == MAX_POINT) {
-            $check_solved[$user][$bai] = true;
-            // add time
-            $thoigian[$user][$bai] = $time+720*$pen[$user][$bai];
-            $total_solved[$user] += $pen[$user][$bai]+1;
-        }
-        
-        // Lấy thông tin của username đã nhập trong table members
-        $sql_query          = "SELECT id, username FROM members WHERE username='{$user}'";
-        $member1            = $conn->query($sql_query);
-        $member             = $member1->fetch_assoc();
-        if ($res[1]<MAX_POINT) $res[1]=0;
-        
-
-        $point[$user][$bai] = $res[1];
-        // Check first solve
-        if(!$first[$bai] && $point[$user][$bai] == MAX_POINT) {
-            $first[$bai] = true;
-            $first_solve[$user][$bai] = true;
-        }
-        // add more penalty
-        $pen[$user][$bai] += 1;
-        // total tried
-        $total_tried_bai[$bai] += 1;
-
-    }
+    
     fclose($fi);
 
 }
-?></tr>
-<?php
-$sumpoint[0] = 0;
-for ($i = 1; $i <= $sltv; $i++) {
-    $sql_query1 = "SELECT name FROM members WHERE username='{$tentv[$i]}'";
-    $member112  = $conn->query($sql_query1);
-    $member12   = $member112->fetch_assoc();
-
-    $s = 0;
-    $s1 = 0;
-    for ($j = 1; $j <= $slbt; $j++) {
-        $point[$tentv[$i]][$nameb[$j]] = str_replace(",", ".", $point[$tentv[$i]][$nameb[$j]]);
-        $s                             = $s + $point[$tentv[$i]][$nameb[$j]];
-        $s1 = $s1 + $thoigian[$tentv[$i]][$nameb[$j]];
-    }
-    $arr_name[$i] = $member12['name'];
-    $sumpoint[$i] = $s;
-    $tongthoigian[$i] = $s1;
-}
-// sort
-for ($i = 1; $i <= $sltv; $i++) {
-    $pos[$i] = $i;
-}
-
-for ($i = 1; $i < $sltv; $i++) {
-    $max = $i;
-    for ($j = $i + 1; $j <= $sltv; $j++) {
-        if (
-            ($sumpoint[$pos[$j]] > $sumpoint[$pos[$max]]) ||
-            (
-                ($sumpoint[$pos[$j]] == $sumpoint[$pos[$max]]) &&
-                ($tongthoigian[$pos[$j]] < $tongthoigian[$pos[$max]])
-            )
-        ) {
-            $max = $j;
-        }
-    }
-    $z         = $pos[$i];
-    $pos[$i]   = $pos[$max];
-    $pos[$max] = $z;
-}
-
-for ($i = 1; $i <= $sltv; $i++) {
-    // Total minutes
-    $total_mins = round($tongthoigian[$pos[$i]]/60);
-    // Col name
-    echo "<td>" . $arr_name[$pos[$i]] . "</td>";
-    // Col total solved
-    echo "<td>".$total_solved[$tentv[$pos[$i]]]."</td>";
-    // Col total time
-    if ($sumpoint[$pos[$i]] == 0) {
-        echo "<td><font color = red></font><br>"."</td>";
-    } else {
-        echo "<td>".$total_mins."</td>";
-        
-    }
-    for ($j = 1; $j <= $slbt; $j++) {
-        // minutes of problems
-        $mins = round($thoigian[$tentv[$pos[$i]]][$nameb[$j]]/60);
-        // Check aceppted
-        if ($point[$tentv[$pos[$i]]][$nameb[$j]] == MAX_POINT) {
-            if ($first_solve[$tentv[$pos[$i]]][$nameb[$j]]) {
-                echo "<td class='solvedfirst'>".$pen[$tentv[$pos[$i]]][$nameb[$j]]."<br>".$mins."</td>";
-            } else {
-                echo "<td class='solved'>".$pen[$tentv[$pos[$i]]][$nameb[$j]]."<br>".$mins."</td>";
-            }
-            // total solved
-            $total_solved_bai[$nameb[$j]] += $pen[$tentv[$pos[$i]]][$nameb[$j]];
-        } else if ($point[$tentv[$pos[$i]]][$nameb[$j]] == "∄ chưa nộp") {
-            echo "<td bgcolor=''></td>";
-        } else {
-            echo "<td class='attempted'>".$pen[$tentv[$pos[$i]]][$nameb[$j]]."<br>--</td>";
-        } 
-
-    }
-    echo "</tr>";
-
-}
 ?>
 
-<tr>
-<th colspan="3">Solved / Tries</th>
-<?php
-    for ($i = 1; $i <= $slbt; $i++) {
-        $x = $total_solved_bai[$nameb[$i]];
-        $y = $total_tried_bai[$nameb[$i]];
-        if ($y==0) {
-            echo "<td><span><sup>".$x."</sup>/<sub>".$y."</sub><br>(0%)</span></td>";
-        }
-        else {
-            echo "<td><span><sup>".$x."</sup>/<sub>".$y."</sub><br>(".(int)($x/$y*100)."%)</span></td>";
-        }
-    }
-?>
-</tr>
 </table>
 

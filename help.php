@@ -33,14 +33,18 @@ if (!isset($_GET["CBHT"])) {
         if (!isset($_GET['act']) && $_GET['act'] != "do1" && $_GET['act'] != "do") {
                     ?>
                 <ul class="nav nav-tabs">
-                  <li class="active"><a data-toggle="tab" href="#home">Question List</a></li>
-                  <li><a data-toggle="tab" href="#menu1">Send a question</a></li>
+                    <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#home">Question List</a>
+                    </li>
+                    <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#menu1">Send a question</a>
+                    </li>
                 </ul>
                 <div class="tab-content">
-                    <div id="home" class="tab-pane fade in active">
+                    <div id="home" class="tab-pane active">
                         <br>        
                         <table class="table table-bordered table-hover">
-                        <thead>
+                        <thead class="thead-dark">
                           <tr>
                             <th><center>Sender</center></th>
                             <th><center>Problem</center></th>
@@ -75,12 +79,12 @@ if (!isset($_GET["CBHT"])) {
                             if (isset($_GET['dataid'])) {
                                 $data = $arr[$_GET['dataid']];
                                 ?>
-                                <div class="modal show" id="myModal" role="dialog">
-                                <div class="modal-dialog">
+                                <div class="modal fade" id="myModal">
+                                <div class="modal-dialog modal-lg">
                                   <div class="modal-content">
                                     <div class="modal-header">
-                                      <button onclick = "$('.modal').removeClass('show').addClass('fade');" type="button" class="close" data-dismiss="modal">&times;</button>
                                       <h4 class="modal-title">Question detail problem <?php echo $data[2]; ?> </h4>
+                                      <button type="button" class="close" data-dismiss="modal">&times;</button>
                                     </div>
                                     <div class="modal-body">
                                         <?php 
@@ -91,21 +95,21 @@ if (!isset($_GET["CBHT"])) {
                                         echo "<input type='hidden' name='id' value=".$data[0].">";
                                         
                                         if ($member['admin'] == 1) {
-                                            echo"<div class='form-group'><label>Answer:</label><textarea class='form-control' rows='5' id='answer' name='answer' form='usrform' required>".$data[4]."</textarea></div>";
-                                            echo "<br><input type='submit' class='btn btn-success' value='Edit answer' name='submit'>";
-                                            echo "</form>";
+                                            echo"<div class='form-group'><label>Answer:</label><textarea class='form-control' rows='5' id='answer' name='answer' form='usrform' required>".$data[4]."</textarea></div>
+                                            <input type='submit' class='btn btn-success' value='Edit answer' name='submit'></form>";
                                         } else {
-                                            echo"<div class='form-group'><label>Answer:</label><textarea readonly class='form-control' rows='5' id='answer' name='answer' form='usrform'>".$data[4]."</textarea></div>";
-                                            echo "</form>";
+                                            echo"<div class='form-group'><label>Answer:</label><textarea readonly class='form-control' rows='5' id='answer' name='answer' form='usrform'>".$data[4]."</textarea></div></form>";
                                         }
                                         ?>
                                     </div>
                                     <div class="modal-footer">
-                                      <button onclick = "$('.modal').removeClass('show').addClass('fade');" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                      <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                                     </div>
-                                  </div>                    
+                                    
+                                  </div>
                                 </div>
                               </div>
+                                
                                 <?php
                             }
                             // Cập nhật câu trả lời

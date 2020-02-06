@@ -29,4 +29,29 @@ function better_scandir($dir, $sorting_order = SCANDIR_SORT_ASCENDING) {
   return ($ret) ? $ret : false;
 
 }
+function search_file($dir) {
+
+  /****************************************************************************/
+  // Roll through the scandir values.
+  $files = array();
+  $i = 0;
+  
+  foreach (scandir($dir."\$History/") as $file) {
+    if ($file[0] === '.' || $file === '$History') {
+      continue;
+    }
+    $files[$i] = $dir."\$History/".$file;
+    $i++;
+  }
+  foreach (scandir($dir) as $file) {
+    if ($file[0] === '.' || $file === '$History') {
+      continue;
+    }
+    $files[$i] = $dir.$file;
+    $i++;
+  } 
+
+  return $files;
+
+}
 ?> 

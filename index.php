@@ -69,6 +69,13 @@ switch($_GET["CBHT"])
 	include_once("dulieu/footer.php");
 	break;
 	}
+	case "admin-rank":
+	{
+	include_once("dulieu/header.php");
+	include_once("admin-rank.php");
+	include_once("dulieu/footer.php");
+	break;
+	}
 }
 
 ?>

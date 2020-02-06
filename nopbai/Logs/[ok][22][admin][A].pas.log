@@ -1,0 +1,6 @@
+﻿admin‣A: ℱ Dịch lỗi
+A.pas
+The system cannot find the path specified
+Cannot execute command:
+"C:\Program Files (x86)\Themis\fpc\bin\i386-win32\fpc.exe" -o"A.exe" -O2 -XS -Sg "A.pas"
+
