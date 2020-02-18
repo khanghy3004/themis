@@ -14,6 +14,13 @@ if (!isset($_GET["CBHT"])) {
 include_once "viewtime.php";
 ?>
                 <?php 
+// Hẹn giờ làm bài
+date_default_timezone_set('Asia/Ho_Chi_Minh');
+$time_2 = date('H:i:s'); //current time
+$days1 = (strtotime($time_2) - strtotime($begin));
+$days2   = (strtotime($date) - strtotime($time_2));
+//Nếu $days>0 cho phép submit
+if ($days1 > 0 && $days2 > 0) {
                 if ($_GET['error']) {
                     echo "
                     <div class='alert alert-danger alert-dismissible fade show'>
@@ -128,13 +135,7 @@ include_once "viewtime.php";
                 <br>
             <?php
             include_once "single-rank.php";
-// Hẹn giờ làm bài
-date_default_timezone_set('Asia/Ho_Chi_Minh');
-$time_2 = date('H:i:s'); //current time
-$days1 = (strtotime($time_2) - strtotime($begin));
-$days2   = (strtotime($date) - strtotime($time_2));
-//Nếu $days>0 cho phép submit
-if ($days1 > 0 && $days2 > 0) {
+
 
     if (isset($_SESSION['user_id'])) {
 
