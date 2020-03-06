@@ -1,8 +1,0 @@
-﻿admin‣A: ℱ Dịch lỗi
-A.c
-Command: "C:\Program Files (x86)\mingw-w64\i686-8.1.0-posix-dwarf-rt_v6-rev0\mingw32\bin\gcc.exe" -o"A.exe" "A.c" -O2 -s -static -lm -x c terminated with exit code: 1
-gcc.exe: warning: '-x c' after last input file has no effect
-A.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
- BCASD
- ^~~~~
-

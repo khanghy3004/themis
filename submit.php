@@ -13,31 +13,40 @@ if (!isset($_GET["CBHT"])) {
         <?php
 include_once "viewtime.php";
 ?>
-                <?php 
+                <?php
 // Hẹn giờ làm bài
 date_default_timezone_set('Asia/Ho_Chi_Minh');
 $time_2 = date('H:i:s'); //current time
-$days1 = (strtotime($time_2) - strtotime($begin));
-$days2   = (strtotime($date) - strtotime($time_2));
+$days1  = (strtotime($time_2) - strtotime($begin));
+$days2  = (strtotime($date) - strtotime($time_2));
 //Nếu $days>0 cho phép submit
 if ($days1 > 0 && $days2 > 0) {
-                if ($_GET['error']) {
-                    echo "
-                    <div class='alert alert-danger alert-dismissible fade show'>
-                    <button type='button' class='close' data-dismiss='alert'>&times;</button>
-                      Submit error!
-                    </div>
-                    ";
-                } 
-                if ($_GET['success']) {
-                    echo "
+    if ($_GET['error']) {
+        if ($_GET['error'] == 1) {
+            echo "
+                        <div class='alert alert-danger alert-dismissible fade show'>
+                        <button type='button' class='close' data-dismiss='alert'>&times;</button>
+                          Submit error!
+                        </div>
+                        ";
+        } else {
+            echo "
+                        <div class='alert alert-danger alert-dismissible fade show'>
+                        <button type='button' class='close' data-dismiss='alert'>&times;</button>
+                          Please select problem!
+                        </div>
+                        ";
+        }
+    }
+    if ($_GET['success']) {
+        echo "
                     <div class='alert alert-success alert-dismissible fade show'>
                     <button type='button' class='close' data-dismiss='alert'>&times;</button>
                       Submit successfully!
                     </div>
                     ";
-                }
-                ?>
+    }
+    ?>
                 <ul class="nav nav-tabs">
                     <li class="nav-item">
                     <a class="nav-link active" data-toggle="tab" href="#home">Submit file</a>
@@ -112,13 +121,13 @@ if ($days1 > 0 && $days2 > 0) {
                                             arr = {'C': 'c_cpp', 'C++': 'c_cpp', 'Python 3': 'python', 'Pascal': 'pascal', 'Java': 'java'};
                                             console.log(arr[category]);
                                             editor.getSession().setMode("ace/mode/"+arr[category]);
-                                        });   
+                                        });
 
                                        var input = $('#content');
                                        var editor = ace.edit("editor");
                                        document.getElementById('editor').style.fontSize = '15px';
                                        // editor.setTheme("ace/theme/twilight");
-                                       
+
 
                                        editor.getSession().on('change', function () {
                                            input.val(editor.getSession().getValue());
@@ -134,8 +143,7 @@ if ($days1 > 0 && $days2 > 0) {
                 </div>
                 <br>
             <?php
-            include_once "single-rank.php";
-
+include_once "single-rank.php";
 
     if (isset($_SESSION['user_id'])) {
 
@@ -158,16 +166,19 @@ if ($days1 > 0 && $days2 > 0) {
 
         if (isset($_GET['act']) && $_GET['act'] == "do1") {
 
+            if ($_POST['tenbai1'] == "") {
+                echo "<script>window.location.href='./?CBHT=submit&error=2';</script>";
+            }
+
             $loaifile = array("C" => "c", "C++" => "cpp", "Python 3" => "py", "Pascal" => "pas", "Java" => "java");
 
-            $tenfile = $_POST['tenbai1']."].".$loaifile[$_POST['ngonngu']];
+            $tenfile = $_POST['tenbai1'] . "]." . $loaifile[$_POST['ngonngu']];
 
             $thoigianlambai = (strtotime($time_2) - strtotime($begin));
 
             $namefile = "[$thoigianlambai][{$member['username']}][" . $tenfile;
 
-            if ($days2 <= 1080) {$target_dir = "nopbai/[frozen]";}
-            else {$target_dir = "nopbai/[ok]";}
+            if ($days2 <= 1080) {$target_dir = "nopbai/[frozen]";} else { $target_dir = "nopbai/[ok]";}
 
             $target_file = $target_dir . $namefile;
             if ($_POST['content'] != "") {
@@ -179,22 +190,24 @@ if ($days1 > 0 && $days2 > 0) {
                 echo "<script>window.location.href='./?CBHT=submit&error=1';</script>";
                 echo "<font color=red><b>Submit Error!</b></font><br>";
             }
-            
+
         }
         if (isset($_GET['act']) && $_GET['act'] == "do") //fix  Undefined index
         {
+            if ($_POST['tenbai'] == "") {
+                echo "<script>window.location.href='./?CBHT=submit&error=2';</script>";
+            }
             $tenfile = basename($_FILES["fileToUpload"]["name"]);
 
             $ngonngu = explode('.', $_FILES["fileToUpload"]["name"])[1];
 
-            $tenfile = $_POST['tenbai']."].".$ngonngu;
+            $tenfile = $_POST['tenbai'] . "]." . $ngonngu;
 
             $thoigianlambai = (strtotime($time_2) - strtotime($begin));
 
             $namefile = "[$thoigianlambai][{$member['username']}][" . $tenfile;
 
-            if ($days2 <= 1080) {$target_dir = "nopbai/[frozen]";}
-            else {$target_dir = "nopbai/[ok]";}
+            if ($days2 <= 1080) {$target_dir = "nopbai/[frozen]";} else { $target_dir = "nopbai/[ok]";}
 
             $target_file = $target_dir . $namefile;
 
@@ -215,10 +228,9 @@ if ($days1 > 0 && $days2 > 0) {
             // Check if $uploadOk is set to 0 by an error
             if ($uploadOk == 0) {
                 echo "<script>window.location.href='./?CBHT=submit&error=1';</script>";
-                echo "<font color=red><b>Submit Error!</b></font><br>";
                 // if everything is ok, try to upload file
             } else {
-                if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {           
+                if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
                     echo "<script>window.location.href='./?CBHT=submit&success=1';</script>";
                     echo "<font color=green><b>Tài khoản {$member['username']} đã nộp bài " . basename($_FILES["fileToUpload"]["name"]) . " thành công.</b></font><br>";
                     print "<meta http-equiv='refresh' content='0; ?CBHT=submit'>";
@@ -227,7 +239,7 @@ if ($days1 > 0 && $days2 > 0) {
                     echo "<font color=red><b>Xin lỗi, có lỗi phát sinh trong quá trình tải.</b></font><br>";
                 }
             }
-        } 
+        }
     } else {
         echo "Please login to continue!";
     }
